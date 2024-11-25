@@ -1,5 +1,4 @@
-<p align="center"><img src="etc/SIMS.svg" alt="" style="width: 300px;"></p>
-
+![](etc/SIMS.svg)
 ## About SIMS
 
 The Security Information Management System (SIMS) is a comprehensive web-based platform designed to assist organizations in managing and documenting their security information effectively. The system simplifies the process of generating formal reports, enabling auditors to assess organizational risks and ensure compliance with security standards.
