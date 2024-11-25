@@ -1,4 +1,4 @@
-<p align="center"><img src="etc/SIMS.svg" alt="" style="width: 300px;"></p>
+<p align="center"><img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fabouttell.wordpress.com%2F2019%2F04%2F15%2Fimplementation-of-the-test-run%2F&psig=AOvVaw2dp6tQKqzmeXpuP2PNyfbg&ust=1732591521191000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLiXq8PE9okDFQAAAAAdAAAAABAE" alt="" style="width: 300px;"></p>
 
 ## About SIMS
 
