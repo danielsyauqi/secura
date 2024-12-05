@@ -20,10 +20,7 @@ class RMSD extends Model
     protected $fillable = [
         'threat_id',
         'safeguard_id',
-        'safeguard_type',
         'safeguard_group',
-        'existing_safeguard',
-        'others_safeguard',
         'risk_level',
         'risk_owner',
         'business_loss',
@@ -31,6 +28,8 @@ class RMSD extends Model
         'vuln_group',
         'vuln_name',
         'likelihood',
+        'scale_5',
+
     ];
 
     public function threat()

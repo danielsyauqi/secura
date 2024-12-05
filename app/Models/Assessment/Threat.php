@@ -21,11 +21,28 @@ class Threat extends Model
         'asset_id',
         'threat_group',
         'threat_name',
+        'status',
+
     ];
 
     public function asset()
     {
         return $this->belongsTo(AssetManagement::class, 'asset_id');
+    }
+
+    public function rmsd()
+    {
+        return $this->hasMany(RMSD::class, 'threat_id'); // Ensure the foreign key is asset_id
+    }
+
+    public function protection()
+    {
+        return $this->hasMany(Protection::class, 'threat_id'); // Ensure the foreign key is asset_id
+    }
+
+    public function treatment()
+    {
+        return $this->hasMany(Treatment::class, 'threat_id'); // Ensure the foreign key is asset_id
     }
 
  

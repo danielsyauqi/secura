@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Orchid;
 
-use Orchid\Platform\Dashboard;
-use Orchid\Platform\ItemPermission;
-use Orchid\Platform\OrchidServiceProvider;
-use Orchid\Screen\Actions\Menu;
 use Orchid\Support\Color;
+use Orchid\Platform\Dashboard;
+use Orchid\Screen\Actions\Menu;
+use Orchid\Platform\ItemPermission;
+use Illuminate\Support\Facades\Auth;
+use Orchid\Platform\OrchidServiceProvider;
 
 class PlatformProvider extends OrchidServiceProvider
 {
@@ -24,7 +25,6 @@ class PlatformProvider extends OrchidServiceProvider
         parent::boot($dashboard);
         $dashboard->registerResource('stylesheets', asset('css/custom.css'));
         $dashboard->registerResource('scripts', asset('js/custom.js'));
-
         // ...
     }
 
@@ -50,16 +50,28 @@ class PlatformProvider extends OrchidServiceProvider
      * @return Menu[]
      */
     public function menu(): array
+    
     {
+
+        $userPermissions = Auth::user()->permissions; // Get current user's permissions (assuming the permissions column is a JSON field)
+
         return [
-            Menu::make('Get Started')
-                ->icon('bs.book')
-                ->title('Navigation')
+            Menu::make('Dashboard')
+                ->icon('bs.columns-gap')
+                ->title('General')
                 ->route(config('platform.index')),
+            
+                
+            Menu::make('SIMS Management ')
+            ->icon('bs.folder')
+            ->list([
+                Menu::make('ISMS/ISO Management')->route('platform.management.SimsManagement'),
+                Menu::make('Team Management')->route('platform.management.TeamManagement'),
+            ])->divider(),
 
             Menu::make('Asset and Valuation')
+                ->title('Risk Assessment Wizard')
                 ->icon('bs.layers')
-                ->route('platform.management.AssetManagement')
                 ->list([
 
                     Menu::make('Asset Management')
@@ -67,79 +79,80 @@ class PlatformProvider extends OrchidServiceProvider
 
                     Menu::make('Valuation of Asset')
                     ->route('platform.assessment.valuation', ['id' => request()->route('id')])
-                    ->canSee($this->isRouteIdPresent()),
                 ]),
 
             Menu::make('Risk Assessment')
                 ->icon('bs.file-earmark-ruled')
                 ->list([
                     Menu::make('Threats Classification')
-                        ->route('platform.assessment.threat', ['id' => request()->route('id')]),
+                        ->route('platform.assessment.threat', ['id' => request()->route('id'), 'threat_id' => request()->route('threat_id')]),
 
                     Menu::make('Risk Management and Safeguard Data')
-                        ->route('platform.assessment.rmsd', ['id' => request()->route('id'), 'threat_id' => request()->route('threat_id')])
-                        ->canSee($this->isRouteThreatIDPresent()),
-                ])->canSee($this->isRouteIdPresent()),
-                
+                        ->route('platform.assessment.rmsd', ['id' => request()->route('id'), 'threat_id' => request()->route('threat_id')]),
 
-            Menu::make('SIMS Management ')
-                ->icon('bs.folder')
-                ->route('platform.management.SimsManagement')
-                ->list([
-                    Menu::make('ISMS/ISO Management')->route('platform.management.SimsManagement'),
-                    Menu::make('Team Management')->route('platform.management.TeamManagement'),
+                    Menu::make('Risk Calculation')
+                        ->route('platform.assessment.risk', ['id' => request()->route('id'), 'threat_id' => request()->route('threat_id')]),
+
+                    Menu::make('Protection Strategy and Decision')
+                        ->route('platform.assessment.protection', ['id' => request()->route('id'), 'threat_id' => request()->route('threat_id')]),
+
+                    Menu::make('Risk Treatment Plan')
+                        ->route('platform.assessment.treatment', ['id' => request()->route('id'), 'threat_id' => request()->route('threat_id')]),
+
                 ]),
-
-            Menu::make('Sample Screen')
-                ->icon('bs.collection')
-                ->route('platform.example')
-                ->badge(fn () => 6),
-
-            Menu::make('Form Elements')
-                ->icon('bs.card-list')
-                ->route('platform.example.fields')
-                ->active('*/examples/form/*'),
-
-            Menu::make('Overview Layouts')
-                ->icon('bs.window-sidebar')
-                ->route('platform.example.layouts'),
-
-            Menu::make('Grid System')
-                ->icon('bs.columns-gap')
-                ->route('platform.example.grid'),
-
-            Menu::make('Charts')
-                ->icon('bs.bar-chart')
-                ->route('platform.example.charts'),
-
-            Menu::make('Cards')
-                ->icon('bs.card-text')
-                ->route('platform.example.cards')
-                ->divider(),
+                
+            Menu::make('Print Report')
+                ->icon('bs.printer')
+                ->route('platform.report.printReport')->divider(),
+            
 
             Menu::make(__('Users'))
                 ->icon('bs.people')
                 ->route('platform.systems.users')
-                ->permission('platform.systems.users')
+                ->canSee(isset($userPermissions['platform.systems.users']) && $userPermissions['platform.systems.users'] === '1')
                 ->title(__('Access Controls')),
 
             Menu::make(__('Roles'))
                 ->icon('bs.shield')
                 ->route('platform.systems.roles')
-                ->permission('platform.systems.roles')
+                ->canSee(isset($userPermissions['platform.systems.roles']) && $userPermissions['platform.systems.roles'] === '1') 
                 ->divider(),
 
-            Menu::make('Documentation')
-                ->title('Docs')
-                ->icon('bs.box-arrow-up-right')
-                ->url('https://orchid.software/en/docs')
-                ->target('_blank'),
+            Menu::make('Log Out')
+                ->title('System')
+                ->icon('bs.door-open')
+                ->route('platform.main', ['logout' => 'true']),                
 
-            Menu::make('Changelog')
-                ->icon('bs.box-arrow-up-right')
-                ->url('https://github.com/orchidsoftware/platform/blob/master/CHANGELOG.md')
-                ->target('_blank')
-                ->badge(fn () => Dashboard::version(), Color::DARK),
+            // Menu::make('Orchid Elements')
+            //     ->icon('bs.plus')
+            //     ->list([
+            //         Menu::make('Sample Screen')
+            //         ->icon('bs.collection')
+            //         ->route('platform.example')
+            //         ->badge(fn () => 6),
+    
+            //         Menu::make('Form Elements')
+            //             ->icon('bs.card-list')
+            //             ->route('platform.example.fields')
+            //             ->active('*/examples/form/*'),
+    
+            //         Menu::make('Overview Layouts')
+            //             ->icon('bs.window-sidebar')
+            //             ->route('platform.example.layouts'),
+    
+            //         Menu::make('Grid System')
+            //             ->icon('bs.columns-gap')
+            //             ->route('platform.example.grid'),
+    
+            //         Menu::make('Charts')
+            //             ->icon('bs.bar-chart')
+            //             ->route('platform.example.charts'),
+    
+            //         Menu::make('Cards')
+            //             ->icon('bs.card-text')
+            //             ->route('platform.example.cards'),
+    
+            //     ]),
         ];
     }
 
@@ -155,5 +168,15 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.roles', __('Roles'))
                 ->addPermission('platform.systems.users', __(key: 'Users')),
         ];
+    }
+
+    /**
+     * Log out the user.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logOut()
+    {
+        \Illuminate\Support\Facades\Auth::logout();
     }
 }

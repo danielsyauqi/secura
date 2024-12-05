@@ -7,7 +7,8 @@ namespace App\Orchid\Layouts\User;
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Rows;
-use Orchid\Screen\Fields\Picture;
+use Orchid\Support\Facades\Layout;
+use App\View\Components\ProfilePhoto;
 
 
 class UserEditLayout extends Rows
@@ -21,8 +22,13 @@ class UserEditLayout extends Rows
      * UserEditLayout constructor.
      *
      * @param bool $includeProfilePhoto
+     * @param $user
      */
-    public function __construct(bool $includeProfilePhoto = false)
+
+     protected $targets = ['user'];
+
+     
+    public function __construct(bool $includeProfilePhoto = false, $user = null)
     {
         $this->includeProfilePhoto = $includeProfilePhoto;
     }
@@ -35,7 +41,9 @@ class UserEditLayout extends Rows
     public function fields(): array
     {
         
-        $fields = [
+        return [
+
+
             Input::make('user.name')
                 ->type('text')
                 ->max(255)
@@ -48,16 +56,15 @@ class UserEditLayout extends Rows
                 ->required()
                 ->title(__('Email'))
                 ->placeholder(__('Email')),
+            
+            Input::make('profile_photo')  // Attach the profile photo field
+                ->title('Profile Photo')
+                ->help('Upload a profile photo (JPG or PNG)') // Add a help message
+                ->accept('.jpg,.jpeg,.png')
+                ->maxFileSize(1024)
+                ->type('file')
+                 // Allow only 1 file
+
         ];
-
-        if ($this->includeProfilePhoto) {
-            $fields[] = Input::make('user.profile_photo')
-                ->type('file') // Change this to 'file' to allow file uploads
-                ->title(__('Profile Photo'))
-                ->maxFiles(1);
-        }
-
-
-        return $fields;
     }
 }

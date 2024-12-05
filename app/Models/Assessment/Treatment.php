@@ -3,9 +3,9 @@
 namespace App\Models\Assessment;
 
 use Orchid\Screen\AsSource;
+use App\Models\Assessment\Threat;
 use Orchid\Attachment\Attachable;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Management\AssetManagement;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Treatment extends Model
@@ -18,16 +18,18 @@ class Treatment extends Model
 
     
     protected $fillable = [
-        'asset_id',
+        'threat_id',
         'treatment',
         'personnel',
         'start_date',
         'end_date',
         'residual_risk',
+        'scale_5',
+
     ];
 
-    public function asset()
+    public function threat()
     {
-        return $this->belongsTo(AssetManagement::class, 'asset_id');
+        return $this->belongsTo(Threat::class, 'threat_id');
     }
 }

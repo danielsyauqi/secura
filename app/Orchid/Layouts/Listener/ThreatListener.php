@@ -34,10 +34,12 @@ class ThreatListener extends Listener
                     Select::make("threat_group")
                         ->options([
                             '' => 'Choose threat group', // Empty option for default selection
-                            'T1 Force Majeure' => 'T1 Force Majeure',
-                            'T2 Deliberate Act' => 'T2 Deliberate Act',
-                            'T3 Human Error' => 'T3 Human Error',
-                            'T4 Technical Failure' => 'T4 Technical Failure',
+                            'T1 Physical Threats' => 'T1 Physical Threats',
+                            'T2 Natural Threats' => 'T2 Natural Threats',
+                            'T3 Infrastructure Failures' => 'T3 Infrastructure Failures',
+                            'T4 Technical Failures' => 'T4 Technical Failures',
+                            'T5 Human Actions' => 'T5 Human Actions',
+                            'T6 Organizational Threats' => 'T6 Organizational Threats',
                         ])
                         ->title('Threat Group')
                         ->help('Select the threat group.'),

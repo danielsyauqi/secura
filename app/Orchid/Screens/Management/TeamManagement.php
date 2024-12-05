@@ -66,6 +66,11 @@ class TeamManagement extends Screen
                         ->options($this->query()['availableUsers']->pluck('name', 'id')->toArray())
                         ->empty('Select a name')
                         ->help('Select a user who has not joined yet.'),
+                        
+                    Input::make('sector')
+                        ->title('Sector')
+                        ->placeholder('Enter sector')
+                        ->help('Enter the sector.'),
                 ]),
 
                 Group::make([
@@ -74,16 +79,14 @@ class TeamManagement extends Screen
                         ->placeholder('Enter job function')
                         ->help('Enter the job function.'),
 
-                    Input::make('sector')
-                        ->title('Sector')
-                        ->placeholder('Enter sector')
-                        ->help('Enter the sector.'),
+
+                    Input::make('ra_function')
+                        ->title('RA Function')
+                        ->placeholder('Enter RA function')
+                        ->help('Enter the RA function.'),
                 ]),
 
-                Input::make('ra_function')
-                    ->title('RA Function')
-                    ->placeholder('Enter RA function')
-                    ->help('Enter the RA function.'),
+                
             ]),
 
             MemberListLayout::class,
@@ -95,10 +98,9 @@ class TeamManagement extends Screen
         try {
             logger($request->all());
 
-            $user = User::findOrFail($request->input('selected_user_id'));
 
             TeamMember::create([
-                'user_id' => $user->id,
+                'user_id' => $request->input('selected_user_id'),
                 'sims_id' => 1,
                 'job_function' => $request->input('job_function'),
                 'sector' => $request->input('sector'),

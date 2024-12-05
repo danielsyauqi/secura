@@ -15,7 +15,7 @@ use Orchid\Screen\Components\Cells\DateTimeSplit;
 
 
 
-class AssetListLayout extends Table
+class SoftwareAsset extends Table
 {
     /**
      * Data source.
@@ -25,7 +25,7 @@ class AssetListLayout extends Table
      *
      * @var string
      */
-    public $target = 'assets';
+    public $target = 'software';
 
     /**
      * Get the table cells to be displayed.
@@ -37,36 +37,42 @@ class AssetListLayout extends Table
         return [
             TD::make('name',__(key: 'Name'))
                 ->cantHide()
-                ->render(fn (AssetManagement $assets) => ModalToggle::make($assets->name)),
+                ->render(function (AssetManagement $asset) {
+                    if ($asset->type === 'Software') {
+                        return ModalToggle::make($asset->name)
+                            ->modal('assetDesc')
+                            ->asyncParameters([
+                                'asset' => $asset->id,
+                            ]);
+                    }
+                    return null;
+                }),
+                //->render(fn (AssetManagement $assets) => ModalToggle::make($assets->name)),
+
+            TD::make('owner', __(key: 'Owner')),
             
-            TD::make('email', __(key: 'Quantity'))
-                ->cantHide()
-                ->render(fn (AssetManagement $assets) => ModalToggle::make($assets->quantity)),
+                //->render(fn (AssetManagement $assets) => ModalToggle::make($assets->owner)),
 
-            TD::make('owner', __(key: 'Owner'))
-                ->cantHide()
-                ->render(fn (AssetManagement $assets) => ModalToggle::make($assets->owner)),
+            TD::make('custodian', __(key: 'Custodian')),
 
-            TD::make('custodian', __(key: 'Custodian'))
-                ->cantHide()
-                ->render(fn (AssetManagement $assets) => ModalToggle::make($assets->custodian)),
+                //->render(fn (AssetManagement $assets) => ModalToggle::make($assets->custodian)),
 
-            TD::make('location', __(key: 'Location'))
-                ->cantHide()
-                ->render(fn (AssetManagement $assets) => ModalToggle::make($assets->location)),
+            TD::make('location', __(key: 'Location')),
+
+                //->render(fn (AssetManagement $assets) => ModalToggle::make($assets->location)),
 
             
-            TD::make('desc', __(key: 'Description'))
-                ->cantHide()
-                ->render(fn (AssetManagement $assets) => ModalToggle::make($assets->description)),
+            TD::make('quantity', __(key: 'Quantity')),
+
+                //->render(fn (AssetManagement $assets) => ModalToggle::make($assets->quantity)),
             
             TD::make('created_at', __('Created'))
-                ->usingComponent(DateTimeSplit::class)
-                ->defaultHidden(),
+                ->usingComponent(DateTimeSplit::class),
+                //->defaultHidden(),
 
             TD::make('updated_at', __('Last edit'))
-                ->usingComponent(DateTimeSplit::class)
-                ->align(TD::ALIGN_RIGHT),
+                ->usingComponent(DateTimeSplit::class),
+                //->align(TD::ALIGN_RIGHT),
 
             TD::make(__('Actions'))
                 ->align(TD::ALIGN_CENTER)

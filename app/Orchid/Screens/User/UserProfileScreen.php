@@ -16,6 +16,7 @@ use Orchid\Screen\Fields\Picture;
 use Orchid\Support\Facades\Toast;
 use Orchid\Support\Facades\Layout;
 use Illuminate\Support\Facades\Hash;
+use App\View\Components\ProfilePhoto;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;    
 use App\Orchid\Layouts\User\UserEditLayout;
@@ -23,6 +24,11 @@ use App\Orchid\Layouts\User\ProfilePasswordLayout;
 
 class UserProfileScreen extends Screen
 {
+
+    public $user;
+    public $user_id;
+
+
     /**
      * Display header name.
      *
@@ -48,10 +54,15 @@ class UserProfileScreen extends Screen
      *
      * @return array
      */
-    public function query(): array
+    public function query(User $user): iterable
     {
+        $this->user = Auth::user();
+
         return [
-            'user' => Auth::user(),
+            'user'       => Auth::user(),
+            'user_id' => $this->user->id,
+            'profile_photo' => $user->profile_photo ? asset('storage/' . $user->profile_photo) : null,
+
         ];
     }
 
@@ -78,6 +89,9 @@ class UserProfileScreen extends Screen
     public function layout(): array
     {
         return [
+
+            Layout::component(ProfilePhoto::class)->canSee($this->user->profile_photo ? true : false),
+
             
             Layout::block(new UserEditLayout(true))
                 ->title(__('Profile Information'))

@@ -15,6 +15,7 @@ use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Toast;
 use Orchid\Support\Facades\Layout;
 use Illuminate\Support\Facades\Hash;
+use App\View\Components\ProfilePhoto;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 use App\Orchid\Layouts\User\UserEditLayout;
@@ -28,6 +29,7 @@ class UserEditScreen extends Screen
      * @var User
      */
     public $user;
+    public $user_id;
 
     /**
      * Fetch data to be displayed on the screen.
@@ -40,6 +42,8 @@ class UserEditScreen extends Screen
 
         return [
             'user'       => $user,
+            'user_id' => $user->id,
+            'profile_photo' => $user->profile_photo ? asset('storage/' . $user->profile_photo) : null,
             'permission' => $user->getStatusPermission(),
         ];
     }
@@ -99,6 +103,8 @@ class UserEditScreen extends Screen
     public function layout(): iterable
     {
         return [
+            Layout::component(ProfilePhoto::class)->canSee($this->user->profile_photo ? true : false)
+            ,
 
             Layout::block(new UserEditLayout(false))
                 ->title(__('Profile Information'))
@@ -167,6 +173,20 @@ class UserEditScreen extends Screen
         $user->when($request->filled('user.password'), function (Builder $builder) use ($request) {
             $builder->getModel()->password = Hash::make($request->input('user.password'));
         });
+
+        // Check if a file is uploaded
+        if ($request->hasFile('profile_photo')) {
+            // Delete the old file if it exists
+            if ($user->profile_photo) {
+            Storage::disk('public')->delete($user->profile_photo);
+            }
+
+            // Store the uploaded file
+            $filePath = $request->file('profile_photo')->store('profile_photos', 'public');
+
+            // Save the file path to the database
+            $user->profile_photo = $filePath;
+        }
 
 
         $user

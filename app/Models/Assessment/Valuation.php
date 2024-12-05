@@ -16,7 +16,7 @@ class Valuation extends Model
 
     protected $primaryKey = 'id';
 
-    
+
     protected $fillable = [
         'asset_id',
         'depend_on',
@@ -25,6 +25,7 @@ class Valuation extends Model
         'integrity',
         'availability',
         'asset_value',
+        'scale_5',
     ];
 
     public function asset()

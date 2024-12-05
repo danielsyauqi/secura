@@ -12,105 +12,94 @@ class VulnGroupOptions
     public static function getVulnerabilityGroupOptions(?string $vulnerabilityType): array
     {
         switch ($vulnerabilityType) {
-            case 'V1 Organizational Vulnerability':
+            case "V1 Hardware":
                 return [
-                    'V1.1 Inadequate management of IT security' => 'V1.1 Inadequate management of IT security',
-                    'V1.2 Inventory of assets is not maintained and classified' => 'V1.2 Inventory of assets is not maintained and classified',
-                    'V1.3 No security in job definition and resourcing' => 'V1.3 No security in job definition and resourcing',
-                    'V1.4 Inadequate mechanism to quantify/monitor incidents/malfunctions' => 'V1.4 Inadequate mechanism to quantify/monitor incidents/malfunctions',
-                    'V1.5 Unprotected secure areas' => 'V1.5 Unprotected secure areas',
-                    'V1.6 Inadequate equipment security' => 'V1.6 Inadequate equipment security',
-                    'V1.7 No authorization for removal of property' => 'V1.7 No authorization for removal of property',
-                    'V1.8 Undefined operational procedures and responsibilities' => 'V1.8 Undefined operational procedures and responsibilities',
-                    'V1.9 Lack of housekeeping' => 'V1.9 Lack of housekeeping',
-                    'V1.10 Insecure handling of media' => 'V1.10 Insecure handling of media',
-                    'V1.11 Lack of security in exchanges of information and software' => 'V1.11 Lack of security in exchanges of information and software',
-                    'V1.12 Inadequate business continuity management' => 'V1.12 Inadequate business continuity management',
-                    'V1.13 Inadequate documentation' => 'V1.13 Inadequate documentation',
-                    'V1.14 Lack of user training' => 'V1.14 Lack of user training',
-                    'V1.15 A lack of compatible, or unsuitable, resources' => 'V1.15 A lack of compatible, or unsuitable, resources',
-                    'V1.16 Lack of, or inadequate, maintenance' => 'V1.16 Lack of, or inadequate, maintenance',
-                    'V1.17 Poor adjustment to change in the use of IT' => 'V1.17 Poor adjustment to change in the use of IT',
-                    'V1.18 Data media are not available when required' => 'V1.18 Data media are not available when required',
-                    'V1.19 Inadequately protected distributors' => 'V1.19 Inadequately protected distributors',
-                    'V1.20 Impairment of IT usage on account of adverse working conditions' => 'V1.20 Impairment of IT usage on account of adverse working conditions',
-                    'V1.21 Inadequate organization of the exchange of users' => 'V1.21 Inadequate organization of the exchange of users',
-                    'V1.22 Lack of evaluation of auditing data' => 'V1.22 Lack of evaluation of auditing data',
-                    'V1.23 Loss of confidentiality of sensitive data of the network to be protected' => 'V1.23 Loss of confidentiality of sensitive data of the network to be protected',
-                    'V1.24 Reduction of transmission or execution speed caused by peer-to-peer functions' => 'V1.24 Reduction of transmission or execution speed caused by peer-to-peer functions',
-                    'V1.25 Violation of copyright' => 'V1.25 Violation of copyright',
-                    'V1.26 Inadequate domain planning' => 'V1.26 Inadequate domain planning',
-                    'V1.27 Inappropriate restriction of user environment' => 'V1.27 Inappropriate restriction of user environment',
-                    'V1.28 Uncontrolled usage of communication lines' => 'V1.28 Uncontrolled usage of communication lines',
-                    'V1.29 Complexity of database access' => 'V1.29 Complexity of database access',
-                    'V1.30 Poor organization of the exchange of database users' => 'V1.30 Poor organization of the exchange of database users',
-                    'V1.31 Conceptual deficiencies of a network' => 'V1.31 Conceptual deficiencies of a network',
-                    'V1.32 Insecure transport of files and data media' => 'V1.32 Insecure transport of files and data media',
-                    'V1.33 Lack of, or inadequate, training of teleworkers' => 'V1.33 Lack of, or inadequate, training of teleworkers',
-                    'V1.34 Delays caused by a temporarily restricted availability of teleworkers' => 'V1.34 Delays caused by a temporarily restricted availability of teleworkers',
-                    'V1.35 Inadequate storage of media in the event of an emergency' => 'V1.35 Inadequate storage of media in the event of an emergency',
-                    'V1.36 Strategy for the network system and management system is not laid down or insufficient' => 'V1.36 Strategy for the network system and management system is not laid down or insufficient',
-                    'V1.37 Inappropriate handling of security incidents' => 'V1.37 Inappropriate handling of security incidents',
-                    'V1.38 Uncontrolled use of faxes' => 'V1.38 Uncontrolled use of faxes',
-                    'V1.39 Lack of or inadequate IT security management' => 'V1.39 Lack of or inadequate IT security management',
+                    '' => 'Select Vulnerability',
+                    'V1.1 Insufficient maintenance/faulty installation of storage media' => 'V1.1 Insufficient maintenance/faulty installation of storage media',
+                    'V1.2 Insufficient periodic replacement schemes for equipment' => 'V1.2 Insufficient periodic replacement schemes for equipment',
+                    'V1.3 Susceptibility to humidity, dust, soiling' => 'V1.3 Susceptibility to humidity, dust, soiling',
+                    'V1.4 Sensitivity to electromagnetic radiation' => 'V1.4 Sensitivity to electromagnetic radiation',
+                    'V1.5 Insufficient configuration change control' => 'V1.5 Insufficient configuration change control',
+                    'V1.6 Susceptibility to voltage variations' => 'V1.6 Susceptibility to voltage variations',
+                    'V1.7 Susceptibility to temperature variations' => 'V1.7 Susceptibility to temperature variations',
+                    'V1.8 Unprotected storage' => 'V1.8 Unprotected storage',
+                    'V1.9 Lack of care at disposal' => 'V1.9 Lack of care at disposal',
+                    'V1.10 Uncontrolled copying' => 'V1.10 Uncontrolled copying',
+                    'V1.11 Unnecessary services enabled' => 'V1.11 Unnecessary services enabled',
                 ];
-                
-            case 'V2 Technical Vulnerability':
+            
+            case "V2 Software":
                 return [
-                    'V2.1 Lack of system planning and acceptance' => 'V2.1 Lack of system planning and acceptance',
-                    'V2.2 Lack of controls against malicious software' => 'V2.2 Lack of controls against malicious software',
-                    'V2.3 Inadequate network access control' => 'V2.3 Inadequate network access control',
-                    'V2.4 Inadequate operating system access control' => 'V2.4 Inadequate operating system access control',
-                    'V2.5 Inadequate application access control' => 'V2.5 Inadequate application access control',
-                    'V2.6 Undefined security requirements for new systems' => 'V2.6 Undefined security requirements for new systems',
-                    'V2.7 Inadequate security in application systems' => 'V2.7 Inadequate security in application systems',
-                    'V2.8 Lack of cryptographic controls for information that has confidentiality, authenticity and integrity requirement' => 'V2.8 Lack of cryptographic controls for information that has confidentiality, authenticity and integrity requirement',
-                    'V2.9 Inadequate security for system files' => 'V2.9 Inadequate security for system files',
-                    'V2.10 Inadequate security in development and support processes' => 'V2.10 Inadequate security in development and support processes',
-                    'V2.11 Defective network component/failure of network management system' => 'V2.11 Defective network component/failure of network management system',
-                    'V2.12 Failure of a cryptomodule/key management' => 'V2.12 Failure of a cryptomodule/key management',
-
+                    '' => 'Select Vulnerability',
+                    'V2.1 No or insufficient software testing' => 'V2.1 No or insufficient software testing',
+                    'V2.2 Well-known flaws in the software' => 'V2.2 Well-known flaws in the software',
+                    'V2.3 No “logout” when leaving the workstation' => 'V2.3 No “logout” when leaving the workstation',
+                    'V2.4 Disposal or reuse of storage media without proper erasure' => 'V2.4 Disposal or reuse of storage media without proper erasure',
+                    'V2.5 Incorrect use of software and hardware' => 'V2.5 Incorrect use of software and hardware',
+                    'V2.6 Incorrect allocation of access rights' => 'V2.6 Incorrect allocation of access rights',
+                    'V2.7 Widely-distributed software' => 'V2.7 Widely-distributed software',
+                    'V2.8 Applying application programs to the wrong data in terms of time' => 'V2.8 Applying application programs to the wrong data in terms of time',
+                    'V2.9 Complicated user interface' => 'V2.9 Complicated user interface',
+                    'V2.10 Incorrect parameter set up' => 'V2.10 Incorrect parameter set up',
+                    'V2.11 Uncontrolled downloading and use of software' => 'V2.11 Uncontrolled downloading and use of software',
+                    'V2.12 Immature or new software' => 'V2.12 Immature or new software',
+                    'V2.13 Unclear or incomplete specifications for developers' => 'V2.13 Unclear or incomplete specifications for developers',
+                    'V2.14 Ineffective change control' => 'V2.14 Ineffective change control',
                 ];
-            case 'V3 Policy and Compliance Vulnerability':
+            
+            case "V3 Network":
                 return [
-                    'V3.1 Lack of, or insufficient policies and policies review' => 'V3.1 Lack of, or insufficient policies and policies review',
-                    'V3.2 Undefined management authorization process for new information processing facilities' => 'V3.2 Undefined management authorization process for new information processing facilities',
-                    'V3.3 Inadequate security controls for third party access' => 'V3.3 Inadequate security controls for third party access',
-                    'V3.4 Inadequate security controls for outsourcing' => 'V3.4 Inadequate security controls for outsourcing',
-                    'V3.5 Unclear disciplinary process on violation of organisation security policies/procedures' => 'V3.5 Unclear disciplinary process on violation of organisation security policies/procedures',
-                    'V3.6 Unclear desk and clear screen policy' => 'V3.6 Unclear desk and clear screen policy',
-                    'V3.7 Lack of user access management' => 'V3.7 Lack of user access management',
-                    'V3.8 Lack of monitoring on system access and use' => 'V3.8 Lack of monitoring on system access and use',
-                    'V3.9 Undefined policies and inadequate controls on mobile computing' => 'V3.9 Undefined policies and inadequate controls on mobile computing',
-                    'V3.10 Undefined policies and inadequate controls on teleworking' => 'V3.10 Undefined policies and inadequate controls on teleworking',
-                    'V3.11 Inadequate software test and release procedures' => 'V3.11 Inadequate software test and release procedures',
-                    'V3.12 Not compliant with legal requirements' => 'V3.12 Not compliant with legal requirements',
-                    'V3.13 Unplanned system audits' => 'V3.13 Unplanned system audits',
-                    'V3.14 Lack of, or insufficient, rules' => 'V3.14 Lack of, or insufficient, rules',
-                    'V3.15 Insufficient knowledge of rules and procedures' => 'V3.15 Insufficient knowledge of rules and procedures',
-                    'V3.16 Insufficient monitoring of IT security measures' => 'V3.16 Insufficient monitoring of IT security measures',
-                    'V3.17 Unauthorized admission to rooms requiring protection' => 'V3.17 Unauthorized admission to rooms requiring protection',
-                    'V3.18 Unauthorized use of rights' => 'V3.18 Unauthorized use of rights',
-                    'V3.19 Uncontrolled use of resources' => 'V3.19 Uncontrolled use of resources',
-                    'V3.20 Insufficient documentation on cabling' => 'V3.20 Insufficient documentation on cabling',
-                    'V3.21 Non-regulated change of users in the case of laptop PCs' => 'V3.21 Non-regulated change of users in the case of laptop PCs',
-                    'V3.22 Inadequate labeling of data media' => 'V3.22 Inadequate labeling of data media',
-                    'V3.23 Improper delivery of data media' => 'V3.23 Improper delivery of data media',
-                    'V3.24 Inadequate key management for encryption' => 'V3.24 Inadequate key management for encryption',
-                    'V3.25 Inadequate supply of printing consumables for fax machines' => 'V3.25 Inadequate supply of printing consumables for fax machines',
-                    'V3.26 Software testing with production data' => 'V3.26 Software testing with production data',
-                    'V3.27 Inadequate line bandwidth' => 'V3.27 Inadequate line bandwidth',
-                    'V3.28 Lack of, or inadequate implementation of database security mechanisms' => 'V3.28 Lack of, or inadequate implementation of database security mechanisms',
-                    'V3.29 Incompatible active and passive network components' => 'V3.29 Incompatible active and passive network components',
-                    'V3.30 Inadequate disposal of data media and documents at the home workplace' => 'V3.30 Inadequate disposal of data media and documents at the home workplace',
-                    'V3.31 Longer response times in the event of an IT system breakdown' => 'V3.31 Longer response times in the event of an IT system breakdown',
-                    'V3.32 Inadequate regulations concerning substitution of teleworkers' => 'V3.32 Inadequate regulations concerning substitution of teleworkers',
-                    'V3.33 Loss of confidentiality through hidden pieces of data' => 'V3.33 Loss of confidentiality through hidden pieces of data',
-                    'V3.34 Uncontrolled use of electronic email' => 'V3.34 Uncontrolled use of electronic email',
-                    'V3.35 Inadequate description of files' => 'V3.35 Inadequate description of files',
-                    'V3.36 Unauthorized collection of personal data' => 'V3.36 Unauthorized collection of personal data',
-                    'V3.37 Inappropriate administration of access rights' => 'V3.37 Inappropriate administration of access rights',
+                    '' => 'Select Vulnerability',
+                    'V3.1 Unprotected communication lines' => 'V3.1 Unprotected communication lines',
+                    'V3.2 Unprotected sensitive traffic' => 'V3.2 Unprotected sensitive traffic',
+                    'V3.3 Single point of failure' => 'V3.3 Single point of failure',
+                    'V3.4 Insecure network architecture' => 'V3.4 Insecure network architecture',
+                    'V3.5 Poor joint cabling' => 'V3.5 Poor joint cabling',
+                    'V3.6 Poor security awareness' => 'V3.6 Poor security awareness',
+                    'V3.7 Unprotected public network connections' => 'V3.7 Unprotected public network connections',
+                    'V3.8 Inadequate network management (resilience of routing)' => 'V3.8 Inadequate network management (resilience of routing)',
+                    'V3.9 Unstable power grid' => 'V3.9 Unstable power grid',
+                    'V3.10 Insufficient or lack of provisions (concerning security) in contracts with customers and/or third parties' => 'V3.10 Insufficient or lack of provisions (concerning security) in contracts with customers and/or third parties',
+                    'V3.11 Unsupervised work by outside or cleaning staff' => 'V3.11 Unsupervised work by outside or cleaning staff',
                 ];
+            
+            case "V4 Personnel":
+                return [
+                    '' => 'Select Vulnerability',
+                    'V4.1 Absence of personnel' => 'V4.1 Absence of personnel',
+                    'V4.2 Inadequate recruitment procedures' => 'V4.2 Inadequate recruitment procedures',
+                    'V4.3 Insufficient security training' => 'V4.3 Insufficient security training',
+                    'V4.4 Insufficient or lack of monitoring mechanisms' => 'V4.4 Insufficient or lack of monitoring mechanisms',
+                    'V4.5 Insufficient or lack of policies for the correct use of telecommunications media and messaging' => 'V4.5 Insufficient or lack of policies for the correct use of telecommunications media and messaging',
+                    'V4.6 Ineffective or lack of mechanisms for identification and authentication of sender and receiver' => 'V4.6 Ineffective or lack of mechanisms for identification and authentication of sender and receiver',
+                    'V4.7 Insufficient or lack of fault reports recorded in administrator and operator logs' => 'V4.7 Insufficient or lack of fault reports recorded in administrator and operator logs',
+                    'V4.8 Disciplinary process in case of information security incident not defined, or not functioning properly' => 'V4.8 Disciplinary process in case of information security incident not defined, or not functioning properly',
+                ];
+            
+            case "V5 Site":
+                return [
+                    '' => 'Select Vulnerability',
+                    'V5.1 Location in an area susceptible to flood' => 'V5.1 Location in an area susceptible to flood',
+                    'V5.2 Inadequate or careless use of physical access control to buildings and rooms' => 'V5.2 Inadequate or careless use of physical access control to buildings and rooms',
+                    'V5.3 Insufficient physical protection of the building, doors and windows' => 'V5.3 Insufficient physical protection of the building, doors and windows',
+                    'V5.4 Procedure of monitoring of information processing facilities not developed, or its implementation is ineffective' => 'V5.4 Procedure of monitoring of information processing facilities not developed, or its implementation is ineffective',
+                    'V5.5 Insufficient control of off-premise assets' => 'V5.5 Insufficient control of off-premise assets',
+                ];
+            
+            case "V6 Organization":
+                return [
+                    '' => 'Select Vulnerability',
+                    'V6.1 Formal procedure for user registration and de-registration not developed, or its implementation is ineffective' => 'V6.1 Formal procedure for user registration and de-registration not developed, or its implementation is ineffective',
+                    'V6.2 Formal process for access right review (supervision) not developed, or its implementation is ineffective' => 'V6.2 Formal process for access right review (supervision) not developed, or its implementation is ineffective',
+                    'V6.3 Insufficient provisions (concerning security) in contracts with customers and/or third parties' => 'V6.3 Insufficient provisions (concerning security) in contracts with customers and/or third parties',
+                    'V6.4 Audits (supervision) not conducted on a regular basis' => 'V6.4 Audits (supervision) not conducted on a regular basis',
+                    'V6.5 Procedures of risk identification and assessment not developed, or its implementation is ineffective' => 'V6.5 Procedures of risk identification and assessment not developed, or its implementation is ineffective',
+                    'V6.6 Procedures for reporting security weaknesses not developed, or their implementation is ineffective' => 'V6.6 Procedures for reporting security weaknesses not developed, or their implementation is ineffective',
+                    'V6.7 Formal procedure for ISMS documentation control not developed, or its implementation is ineffective' => 'V6.7 Formal procedure for ISMS documentation control not developed, or its implementation is ineffective',
+                    'V6.8 Formal procedure for ISMS record supervision not developed, or its implementation is ineffective' => 'V6.8 Formal procedure for ISMS record supervision not developed, or its implementation is ineffective',
+                ];
+            
+            
             default:
                 return ['' => 'Choose vulnerability type'];
         }

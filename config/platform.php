@@ -2,6 +2,7 @@
 
 return [
 
+
     /*
      |--------------------------------------------------------------------------
      | Sub-Domain Routing
@@ -160,7 +161,7 @@ return [
      */
 
     'template' => [
-        'header' => '',
+        'header' => 'brand.header',
         'footer' => '',
     ],
 
@@ -318,5 +319,9 @@ return [
      */
 
     'provider' => \App\Orchid\PlatformProvider::class,
+
+    'aliases' => [
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+    ],
 
 ];

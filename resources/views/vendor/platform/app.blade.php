@@ -63,7 +63,7 @@
 
 <body class="{{ \Orchid\Support\Names::getPageNameClass() }}" data-controller="pull-to-refresh">
 
-<div class="container-fluid" data-controller="@yield('controller')" @yield('controller-data')>
+<div class="container-fluid" data-controller="@yield('controller') @yield('controller-data')">
 
     <div class="row justify-content-center d-md-flex h-100">
         @yield('aside')

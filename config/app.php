@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Security Information Management System'),
 
     /*
     |--------------------------------------------------------------------------
@@ -124,5 +124,8 @@ return [
     ],
 
     'mix_url' => env('MIX_URL', null),
+
+
+    
 
 ];

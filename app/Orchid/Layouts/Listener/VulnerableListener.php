@@ -46,9 +46,13 @@ class VulnerableListener extends Listener
                     Select::make('vuln_group')
                         ->options([
                             '' => 'Choose vulnerability group',
-                            'V1 Organizational Vulnerability' => 'V1 Organizational Vulnerability',
-                            'V2 Technical Vulnerability' => 'V2 Technical Vulnerability',
-                            'V3 Policy and Compliance Vulnerability' => 'V3 Policy and Compliance Vulnerability',
+                            'V1 Hardware' => 'V1 Hardware',
+                            'V2 Software' => 'V2 Software',
+                            'V3 Network' => 'V3 Network',
+                            'V4 Personnel' => 'V4 Personnel',
+                            'V5 Site' => 'V5 Site',
+                            'V6 Organization' => 'V6 Organization',
+
                         ])
                         ->title('Add/Update Vulnerability Group')
                         ->help('Select the vulnerability group.'),

@@ -2,34 +2,44 @@
 
 declare(strict_types=1);
 
-use Tabuna\Breadcrumbs\Trail;
-use Illuminate\Support\Facades\Route;
-use App\Orchid\Screens\PlatformScreen;
+use App\Http\Controllers\detailRA;
+use App\Http\Controllers\detailRA_5;
+use App\Http\Controllers\highRecommend;
+use App\Http\Controllers\highRecommend_5;
+use App\Http\Controllers\summary;
+use App\Http\Controllers\summary_5;
+use App\Http\Controllers\treatmentAppendix;
+use App\Http\Controllers\treatmentAppendix_5;
+use App\Http\Controllers\treatmentSummary;
+use App\Http\Controllers\treatmentSummary_5;
+use App\Http\Controllers\users;
+use App\Orchid\Screens\Assessment\Protection;
+use App\Orchid\Screens\Assessment\RMSD;
+use App\Orchid\Screens\Assessment\RiskCalculation;
 use App\Orchid\Screens\Assessment\Threat;
+use App\Orchid\Screens\Assessment\Treatment;
+use App\Orchid\Screens\Assessment\Valuation;
+use App\Orchid\Screens\Examples\ExampleActionsScreen;
+use App\Orchid\Screens\Examples\ExampleCardsScreen;
+use App\Orchid\Screens\Examples\ExampleChartsScreen;
+use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
+use App\Orchid\Screens\Examples\ExampleFieldsScreen;
+use App\Orchid\Screens\Examples\ExampleGridScreen;
+use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
+use App\Orchid\Screens\Examples\ExampleScreen;
+use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\Management\AssetManagement;
+use App\Orchid\Screens\Management\SimsManagement;
+use App\Orchid\Screens\Management\TeamManagement;
+use App\Orchid\Screens\PlatformScreen;
+use App\Orchid\Screens\Report\PrintReport;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
-use App\Orchid\Screens\Assessment\valuation;
-use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
-
-
-//SIMS Route
-use App\Orchid\Screens\Assessment\RMSD;
-use App\Orchid\Screens\Management\SimsManagement;
-use App\Orchid\Screens\Management\TeamManagement;
-use App\Orchid\Screens\Examples\ExampleGridScreen;
-use App\Orchid\Screens\Management\AssetManagement;
-use App\Orchid\Screens\Examples\ExampleCardsScreen;
-use App\Orchid\Screens\Examples\ExampleChartsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsScreen;
-use App\Orchid\Screens\Examples\ExampleActionsScreen;
-use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
-use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
-
-
+use Illuminate\Support\Facades\Route;
+use Tabuna\Breadcrumbs\Trail;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +55,7 @@ use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
 
 
 // Main
-Route::screen('/main', PlatformScreen::class)
+Route::screen('/main/{logout?}', PlatformScreen::class)
     ->name('platform.main');
 
 // Platform > Profile
@@ -121,19 +131,40 @@ Route::screen('/management/AssetManagement/{id?}', AssetManagement::class)->name
 
 //SIMS Route (Steps Form)
 Route::screen('assessment/Valuation/{id?}', Valuation::class)->name('platform.assessment.valuation');
-Route::screen('assessment/Threat/{id?}', Threat::class)->name('platform.assessment.threat');
-Route::screen('assessment/threat/{id}/{threat_id}/edit', Threat::class)
+Route::screen('assessment/Threat/{id?}/{threat_id?}', Threat::class)->name('platform.assessment.threat');
+Route::screen('assessment/threat/{id?}/{threat_id?}/edit', Threat::class)
     ->name('platform.assessment.threat.edit');
 
 Route::screen('assessment/RMSD/{id?}/{threat_id?}', RMSD::class)->name('platform.assessment.rmsd');
-Route::post('assessment/RMSD/{id}/saveSafeguard', [RMSD::class, 'saveSafeguard'])->name('platform.assessment.rmsd.saveSafeguard');
-Route::post('assessment/RMSD/{id}/saveVulnerable', [RMSD::class, 'saveVulnerable'])->name('platform.assessment.rmsd.saveVulnerable');
+Route::screen('assessment/RiskCalc/{id?}/{threat_id?}', RiskCalculation::class)->name('platform.assessment.risk');
+Route::screen('assessment/Protection/{id?}/{threat_id?}', Protection::class)->name('platform.assessment.protection');
+Route::screen('assessment/Treatment/{id?}/{threat_id?}', Treatment::class)->name('platform.assessment.treatment');
 
-use App\Models\Assessment\Threat as ThreatModel;
-use Illuminate\Http\Request;
+Route::screen('report/PrintReport', PrintReport::class)->name('platform.report.printReport');
+Route::get ('/detail-ra', [detailRA::class, 'detailRA'])->name('detailRA');
+Route::get ('/summary', [summary::class, 'summary'])->name('summary');
+Route::get ('/highRecommend', [highRecommend::class, 'highRecommend'])->name('highRecommend');
+Route::get ('/treatmentAppendix', [treatmentAppendix::class, 'treatmentAppendix'])->name('treatmentAppendix');
+Route::get ('/treatmentsummary', [treatmentSummary::class, 'treatmentSummary'])->name('treatmentSummary');
+
+Route::get ('/detail-ra5', [detailRA_5::class, 'detailRA_5'])->name('detailRA_5');
+Route::get ('/summary5', [summary_5::class, 'summary_5'])->name('summary_5');
+Route::get ('/highRecommend5', [highRecommend_5::class, 'highRecommend_5'])->name('highRecommend_5');
+Route::get ('/treatmentAppendix5', [treatmentAppendix_5::class, 'treatmentAppendix_5'])->name('treatmentAppendix_5');
+Route::get ('/treatmentsummary5', [treatmentsummary_5::class, 'treatmentsummary_5'])->name('treatmentsummary_5');
 
 
 
+
+
+
+
+
+use Illuminate\Support\Facades\Log;
+
+Route::get('/users', function() {
+    Log::info('Users route accessed');
+});
 
 
 

@@ -10,39 +10,6 @@ class SafeguardOptions
      * @param string|null $safeguardType
      * @return array
      */
-    public static function getSafeguardGroupOptions(?string $safeguardType): array
-    {
-        return match ($safeguardType) {
-            'ISMS Clause' => [
-                '' => 'Select ISMS Clause',
-                'Clause 4: Context of the Organization' => 'Clause 4: Context of the Organization',
-                'Clause 5: Leadership' => 'Clause 5: Leadership',
-                'Clause 6: Planning' => 'Clause 6: Planning',
-                'Clause 7: Support' => 'Clause 7: Support',
-                'Clause 8: Operation' => 'Clause 8: Operation',
-                'Clause 9: Performance Evaluation' => 'Clause 9: Performance Evaluation',
-                'Clause 10: Improvement' => 'Clause 10: Improvement',
-            ],
-            'Annex A' => [
-                '' => 'Select Annex A Control',
-                'A.5 Organizational Controls' => 'A.5 Organizational Controls',
-                'A.6 People Controls' => 'A.6 People Controls',
-                'A.7 Physical Controls' => 'A.7 Physical Controls',
-                'A.8 Technological Controls' => 'A.8 Technological Controls',
-                'A.9 Access Control' => 'A.9 Access Control',
-                'A.10 Cryptography' => 'A.10 Cryptography',
-                'A.11 Physical and Environmental Security' => 'A.11 Physical and Environmental Security',
-                'A.12 Operations Security' => 'A.12 Operations Security',
-                'A.13 Communications Security' => 'A.13 Communications Security',
-                'A.14 System Acquisition, Development, and Maintenance' => 'A.14 System Acquisition, Development, and Maintenance',
-                'A.15 Supplier Relationships' => 'A.15 Supplier Relationships',
-                'A.16 Information Security Incident Management' => 'A.16 Information Security Incident Management',
-                'A.17 Information Security Aspects of Business Continuity Management' => 'A.17 Information Security Aspects of Business Continuity Management',
-                'A.18 Compliance' => 'A.18 Compliance',
-            ],
-            default => ['' => 'Choose safeguard type'],
-        };
-    }
 
     /**
      * Get safeguard ID options based on safeguard group.
@@ -50,121 +17,115 @@ class SafeguardOptions
      * @param string|null $safeguardGroup
      * @return array
      */
-    public static function getSafeguardIdOptions(?string $safeguardGroup): array
+    public static function getSafeguardIdOptions(?string $safeguardGroup, ?string $type): array
     {
-        if (!$safeguardGroup) {
+        if (!$safeguardGroup && $type === 'Safeguard') {
             return ['' => 'Choose safeguard ID']; // Return empty if no safeguard group selected
+        }else if (!$safeguardGroup && $type === 'Protection') {
+            return ['' => 'Choose protection ID']; // Return empty if no safeguard group selected
+
         }
 
         switch ($safeguardGroup) {
-            case "Clause 4: Context of the Organization":
+            case "S1 Organizational Controls":
                 return [
-                    '' => 'Select ISMS Clause',
-                    '4.1 Understanding the organization and its context' => '4.1 Understanding the organization and its context',
-                    '4.2 Understanding the needs and expectations of interested parties' => '4.2 Understanding the needs and expectations of interested parties',
-                    '4.3 Determining the scope of the information security management system' => '4.3 Determining the scope of the information security management system',
-                    '4.4 Information security management system' => '4.4 Information security management system',
-                    '4.5 Leadership and commitment' => '4.5 Leadership and commitment',
+                    '' => 'Select Safeguard',
+                    'S1.1 Policies for information security' => 'S1.1 Policies for information security',
+                    'S1.2 Information security roles and responsibilities' => 'S1.2 Information security roles and responsibilities',
+                    'S1.3 Segregation of duties' => 'S1.3 Segregation of duties',
+                    'S1.4 Management responsibilities' => 'S1.4 Management responsibilities',
+                    'S1.5 Contact with authorities' => 'S1.5 Contact with authorities',
+                    'S1.6 Contact with special interest groups' => 'S1.6 Contact with special interest groups',
+                    'S1.7 Threat intelligence' => 'S1.7 Threat intelligence',
+                    'S1.8 Information security in project management' => 'S1.8 Information security in project management',
+                    'S1.9 Inventory of Information and other associated assets' => 'S1.9 Inventory of Information and other associated assets',
+                    'S1.10 Acceptable use of information and other associated assets' => 'S1.10 Acceptable use of information and other associated assets',
+                    'S1.11 Return of assets' => 'S1.11 Return of assets',
+                    'S1.12 Classification of information' => 'S1.12 Classification of information',
+                    'S1.13 Labelling of Information' => 'S1.13 Labelling of Information',
+                    'S1.14 Information Transfer' => 'S1.14 Information Transfer',
+                    'S1.15 Information Security in supplier relationships' => 'S1.15 Information Security in supplier relationships',
+                    'S1.16 Addressing information security within supplier agreements' => 'S1.16 Addressing information security within supplier agreements',
+                    'S1.17 Managing information security in the ICT supply chain' => 'S1.17 Managing information security in the ICT supply chain',
+                    'S1.18 Legal, statutory, regulatory and contractual requirements' => 'S1.18 Legal, statutory, regulatory and contractual requirements',
+                    'S1.19 Intellectual Property Rights (IPR)' => 'S1.19 Intellectual Property Rights (IPR)',
+                    'S1.20 Protection of Records' => 'S1.20 Protection of Records',
+                    'S1.21 Privacy and protection of personally identifiable information (PII)' => 'S1.21 Privacy and protection of personally identifiable information (PII)',
+                    'S1.22 Independent Review of Information Security' => 'S1.22 Independent Review of Information Security',
+                    'S1.23 Compliance with security policy and standards for information security' => 'S1.23 Compliance with security policy and standards for information security',
+                    'S1.24 Documented Operating Procedures' => 'S1.24 Documented Operating Procedures',
                 ];
             
-            case "Clause 5: Leadership":
+            case "S2 People Controls":
                 return [
-                    '' => 'Select ISMS Clause',
-                    '5.1 Leadership and commitment' => '5.1 Leadership and commitment',
-                    '5.2 Policy' => '5.2 Policy',
-                    '5.3 Organizational roles, responsibilities and authorities' => '5.3 Organizational roles, responsibilities and authorities',
+                    '' => 'Select Safeguard',
+                    'S2.1 Screening' => 'S2.1 Screening',
+                    'S2.2 Terms and conditions of employment' => 'S2.2 Terms and conditions of employment',
+                    'S2.3 Information security awareness, education and training' => 'S2.3 Information security awareness, education and training',
+                    'S2.4 Disciplinary process' => 'S2.4 Disciplinary process',
+                    'S2.5 Responsibilities after termination or change of employment' => 'S2.5 Responsibilities after termination or change of employment',
+                    'S2.6 Confidentiality or non-disclosure agreements' => 'S2.6 Confidentiality or non-disclosure agreements',
+                    'S2.7 Working in secure areas' => 'S2.7 Working in secure areas',
+                    'S2.8 Remote working' => 'S2.8 Remote working',
+                    'S2.9 Clear desk and clear screen' => 'S2.9 Clear desk and clear screen',
+                    'S2.10 Information security event reporting' => 'S2.10 Information security event reporting',
                 ];
-            case "Clause 6: Planning":
+            
+            case "S3 Physical Controls":
                 return [
-                    '' => 'Select ISMS Clause',
-                    '6.1 Actions to address risks and opportunities' => '6.1 Actions to address risks and opportunities',
-                    '6.1.1 General' => '6.1.1 General',
-                    '6.1.2 Information security risk assessment' => '6.1.2 Information security risk assessment',
-                    '6.1.3 Information security risk treatment' => '6.1.3 Information security risk treatment',
-                    '6.2 Information security objectives and planning to achieve them' => '6.2 Information security objectives and planning to achieve them',
+                    '' => 'Select Safeguard',
+                    'S3.1 Physical security perimeters' => 'S3.1 Physical security perimeters',
+                    'S3.2 Physical entry' => 'S3.2 Physical entry',
+                    'S3.3 Securing offices, rooms and facilities' => 'S3.3 Securing offices, rooms and facilities',
+                    'S3.4 Physical security monitoring' => 'S3.4 Physical security monitoring',
+                    'S3.5 Protecting against physical and environmental threats' => 'S3.5 Protecting against physical and environmental threats',
+                    'S3.6 Equipment siting and protection' => 'S3.6 Equipment siting and protection',
+                    'S3.7 Security of assets off-premises' => 'S3.7 Security of assets off-premises',
+                    'S3.8 Storage media' => 'S3.8 Storage media',
+                    'S3.9 Cabling security' => 'S3.9 Cabling security',
+                    'S3.10 Equipment maintenance' => 'S3.10 Equipment maintenance',
+                    'S3.11 Secure disposal or re-use of equipment' => 'S3.11 Secure disposal or re-use of equipment',
+                    'S3.12 Redundancy of information processing facilities' => 'S3.12 Redundancy of information processing facilities',
                 ];
-            case "Clause 7: Support":
+            
+            case "S4 Technological Controls":
                 return [
-                    '' => 'Select ISMS Clause',
-                    '7.1 Resources' => '7.1 Resources',
-                    '7.2 Competence' => '7.2 Competence',
-                    '7.3 Awareness' => '7.3 Awareness',
-                    '7.4 Communication' => '7.4 Communication',
-                    '7.5 Documented information' => '7.5 Documented information',
-                    '7.5.1 General' => '7.5.1 General',
-                    '7.5.2 Creating and updating' => '7.5.2 Creating and updating',
-                    '7.5.3 Control of documented information' => '7.5.3 Control of documented information',
-                ];
-            case "Clause 8: Operation":
-                return [
-                    '' => 'Select ISMS Clause',
-                    '8.1 Operational planning and control' => '8.1 Operational planning and control',
-                    '8.2 Information security risk assessment' => '8.2 Information security risk assessment',
-                    '8.3 Information security risk treatment' => '8.3 Information security risk treatment',
-                ];
-            case "Clause 9: Performance Evaluation":
-                return [
-                    '' => 'Select ISMS Clause',
-                    '9.1 Monitoring, measurement, analysis, and evaluation' => '9.1 Monitoring, measurement, analysis, and evaluation',
-                    '9.2 Internal audit' => '9.2 Internal audit',
-                    '9.2.1 General' => '9.2.1 General',
-                    '9.2.2 Internal audit programme' => '9.2.2 Internal audit programme',
-                    '9.3 Management review' => '9.3 Management review',
-                    '9.3.1 General' => '9.3.1 General',
-                    '9.3.2 Management review inputs' => '9.3.2 Management review inputs',
-                    '9.3.3 Management review results' => '9.3.3 Management review results',
-                ];
-            case "Clause 10: Improvement":
-                return [
-                    '' => 'Select ISMS Clause',
-                    '10.1 Continual improvement' => '10.1 Continual improvement',
-                    '10.2 Nonconformity and corrective action' => '10.2 Nonconformity and corrective action',
-                ];
-            case "A.5 Organizational Controls":
-                return [
-                    '' => 'Select Annex A Control',
-                    'A.5.1 Information security policy' => 'A.5.1 Information security policy',
-                    'A.5.2 Information security roles and responsibilities' => 'A.5.2 Information security roles and responsibilities',
-                    'A.5.3 Segregation of duties' => 'A.5.3 Segregation of duties',
-                    'A.5.4 Management responsibilities' => 'A.5.4 Management responsibilities',
-                    'A.5.5 Contact with authorities' => 'A.5.5 Contact with authorities',
-                    'A.5.6 Contact with special interest groups' => 'A.5.6 Contact with special interest groups',
-                    'A.5.7 Threat intelligence' => 'A.5.7 Threat intelligence',
-                    'A.5.8 Information security in project management' => 'A.5.8 Information security in project management',
-                ];
-            case "A.6 People Controls":
-                return [
-                    '' => 'Select Annex A Control',
-                    'A.6.1 Screening' => 'A.6.1 Screening',
-                    'A.6.2 Terms and conditions of employment' => 'A.6.2 Terms and conditions of employment',
-                    'A.6.3 Information security awareness, education and training' => 'A.6.3 Information security awareness, education and training',
-                    'A.6.4 Disciplinary process' => 'A.6.4 Disciplinary process',
-                    'A.6.5 Responsibilities after termination or change of employment' => 'A.6.5 Responsibilities after termination or change of employment',
-                    'A.6.6 Confidentiality or non-disclosure agreements' => 'A.6.6 Confidentiality or non-disclosure agreements',
-                    'A.6.7 Remote working' => 'A.6.7 Remote working',
-                    'A.6.8 Information security event reporting' => 'A.6.8 Information security event reporting',
-                ];
-            case "A.7 Physical Controls":
-                return [
-                    '' => 'Select Annex A Control',
-                    'A.7.1 Physical security perimeters' => 'A.7.1 Physical security perimeters',
-                    'A.7.2 Physical entry' => 'A.7.2 Physical entry',
-                    'A.7.3 Securing offices, rooms and facilities' => 'A.7.3 Securing offices, rooms and facilities',
-                    'A.7.4 Physical security monitoring' => 'A.7.4 Physical security monitoring',
-                    'A.7.5 Protecting against physical and environmental threats' => 'A.7.5 Protecting against physical and environmental threats',
-                    'A.7.6 Working in secure areas' => 'A.7.6 Working in secure areas',
-                    'A.7.7 Clear desk and clear screen' => 'A.7.7 Clear desk and clear screen',
-                    'A.7.8 Equipment siting and protection' => 'A.7.8 Equipment siting and protection',
-                    'A.7.9 Security of assets off-premises' => 'A.7.9 Security of assets off-premises',
-                    'A.7.10 Storage media' => 'A.7.10 Storage media',
-                ];
-            case "A.8 Technological Controls":
-                return [
-                    '' => 'Select Annex A Control',
-                    'A.8.30 Separation of development, test and production environments' => 'A.8.30 Separation of development, test and production environments',
-                    'A.8.31 Configuration management' => 'A.8.31 Configuration management',
-                    'A.8.32 Application software security' => 'A.8.32 Application software security',
-                ];
+                    '' => 'Select Safeguard',
+                    'S4.1 User end point devices' => 'S4.1 User end point devices',
+                    'S4.2 Privileged access rights' => 'S4.2 Privileged access rights',
+                    'S4.3 Information access restriction' => 'S4.3 Information access restriction',
+                    'S4.4 Access to source code' => 'S4.4 Access to source code',
+                    'S4.5 Secure authentication' => 'S4.5 Secure authentication',
+                    'S4.6 Capacity management' => 'S4.6 Capacity management',
+                    'S4.7 Protection against malware' => 'S4.7 Protection against malware',
+                    'S4.8 Configuration management' => 'S4.8 Configuration management',
+                    'S4.9 Information deletion' => 'S4.9 Information deletion',
+                    'S4.10 Data masking' => 'S4.10 Data masking',
+                    'S4.11 Data leakage prevention' => 'S4.11 Data leakage prevention',
+                    'S4.12 Information backup' => 'S4.12 Information backup',
+                    'S4.13 Secure disposal or re-use of equipment' => 'S4.13 Secure disposal or re-use of equipment',
+                    'S4.14 Logging' => 'S4.14 Logging',
+                    'S4.15 Monitoring activities' => 'S4.15 Monitoring activities',
+                    'S4.16 Clock synchronization' => 'S4.16 Clock synchronization',
+                    'S4.17 Use of privileged utility programs' => 'S4.17 Use of privileged utility programs',
+                    'S4.18 Installation of software on operational systems' => 'S4.18 Installation of software on operational systems',
+                    'S4.19 Networks security' => 'S4.19 Networks security',
+                    'S4.20 Security of network services' => 'S4.20 Security of network services',
+                    'S4.21 Segregation of networks' => 'S4.21 Segregation of networks',
+                    'S4.22 Web filtering' => 'S4.22 Web filtering',
+                    'S4.23 Use of cryptography' => 'S4.23 Use of cryptography',
+                    'S4.24 Secure development life cycle' => 'S4.24 Secure development life cycle',
+                    'S4.25 Application security requirements' => 'S4.25 Application security requirements',
+                    'S4.26 Secure system architecture and engineering principles' => 'S4.26 Secure system architecture and engineering principles',
+                    'S4.27 Secure coding' => 'S4.27 Secure coding',
+                    'S4.28 Security testing in development and acceptance' => 'S4.28 Security testing in development and acceptance',
+                    'S4.29 Outsourced development' => 'S4.29 Outsourced development',
+                    'S4.30 Separation of development, test and production environments' => 'S4.30 Separation of development, test and production environments',
+                    'S4.31 Change management' => 'S4.31 Change management',
+                    'S4.32 Test information' => 'S4.32 Test information',
+                    'S4.33 Protection of information systems during audit testing' => 'S4.33 Protection of information systems during audit testing',
+                ];            
+                           
             default:
             return ['' => 'Choose safeguard ID'];
         }

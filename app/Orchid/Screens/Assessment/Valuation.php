@@ -3,18 +3,16 @@
 namespace App\Orchid\Screens\Assessment;
 
 use Orchid\Screen\Screen;
-use Orchid\Support\Color;
 use Illuminate\Http\Request;
+use App\Models\Assessment\RMSD;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\Label;
-use Orchid\Screen\Fields\Range;
-use Orchid\Screen\Fields\Select;
+use App\Models\Assessment\Threat;
 use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Toast;
 use Orchid\Support\Facades\Layout;
+use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Actions\ModalToggle;
-use Orchid\Screen\Fields\RadioButtons;
 use App\Orchid\Layouts\Listener\ValuationListener;
 use App\Models\Assessment\Valuation as ValuationModel;
 use App\Orchid\Layouts\Listener\AssetSelectionListener;
@@ -29,15 +27,35 @@ class Valuation extends Screen
     public $availability;
     public $asset_value;
 
-    public function query($id): iterable
+    public $confidential_5;
+    public $integrity_5;
+    public $availability_5;
+    public $asset_value_5;
+
+    public function query($id = null): iterable
     {
         $this->asset = AssetManagement::find($id);
         $this->asset_valuation = ValuationModel::where('asset_id', $id)->get();
 
-        $this->confidential = optional($this->asset_valuation->first())->confidential;
-        $this->integrity = optional($this->asset_valuation->first())->integrity;
-        $this->availability = optional($this->asset_valuation->first())->availability;
-        $this->asset_value = optional($this->asset_valuation->first())->asset_value;
+        $this->confidential = optional($this->asset_valuation->first())->confidential ?? null;
+        $this->integrity = optional($this->asset_valuation->first())->integrity ?? null;
+        $this->availability = optional($this->asset_valuation->first())->availability ?? null;
+        $this->asset_value = optional($this->asset_valuation->first())->asset_value ?? null;
+
+
+        $scale_5 = json_decode(optional($this->asset_valuation->first())->scale_5, true) ?? [];
+        $this->confidential_5 = $scale_5['confidential'] ?? null;
+        $this->integrity_5 = $scale_5['integrity'] ?? null;
+        $this->availability_5 = $scale_5['availability'] ?? null;
+        $this->asset_value_5 = $scale_5['asset_value'] ?? null;
+
+        Log::info('Scale 5 values:', [
+            'confidential_5' => $this->confidential_5,
+            'integrity_5' => $this->integrity_5,
+            'availability_5' => $this->availability_5,
+            'asset_value_5' => $this->asset_value_5,
+        ]);
+
 
 
         if (!$this->asset) {
@@ -53,6 +71,10 @@ class Valuation extends Screen
             'integrity' => $this->integrity,
             'availability' => $this->availability,
             'asset_value' => $this->asset_value,
+            'confidential_5' => $this->confidential_5,
+            'integrity_5' => $this->integrity_5,
+            'availability_5' => $this->availability_5,
+            'asset_value_5' => $this->asset_value_5,
 
         ];
     }
@@ -64,16 +86,19 @@ class Valuation extends Screen
 
     public function description(): ?string
     {
-        return 'Include professionals with expertise in security, ICT, and the organization’s core business operations. 
-                Team members should understand the technical and operational aspects of your organization to handle security and risk data effectively.';
+        return 'The valuation of an asset is a crucial initial step in the overall assessment process. This step involves determining the monetary value or worth of the asset. Accurate valuation is essential as it forms the basis for further analysis and decision-making regarding the asset. The valuation process may involve various methods and techniques depending on the type of asset and the context in which the valuation is being performed.';
     }
 
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Next Step'))
-                ->icon('bs.arrow-bar-right')
+            Button::make(__('Save'))
+                ->icon('save')
                 ->method('save'),
+
+            Button::make(__('Next'))
+                ->icon('bs.arrow-bar-right')
+                ->method('next'),
         ];
     }
 
@@ -84,41 +109,49 @@ class Valuation extends Screen
 
         return [
 
-            Layout::rows([
-                Group::make([
-                    Input::make('asset.name')
-                        ->title('Asset Name')
-                        ->value(value: optional(value: $this->asset)->type)
-                        ->readonly(),
+            Layout::accordionShow([
+                'Asset Information' => Layout::rows([
+                    Group::make([
+                        Input::make('asset.name')
+                            ->title('Asset Name')
+                            ->style('color: #43494f;')
+                            ->value(value: optional(value: $this->asset)->type)
+                            ->readonly(),
+    
+                        Input::make('asset.type')
+                            ->title('Asset Type')
+                            ->style('color: #43494f;')
+                            ->value(value: optional(value: $this->asset)->type)
+                            ->readonly(),
+                    ]),
+    
 
-                    Input::make('asset.type')
-                        ->title('Asset Type')
-                        ->value(value: optional(value: $this->asset)->type)
-                        ->readonly(),
-                ]),
+                    ModalToggle::make(!$this->asset ? __('Choose Asset') : __('Change Asset'))
+                        ->modal('chooseAsset')
+                        ->icon('bs.box-arrow-up-right')
+                        ->method('changeAsset')
+                        ->open(!$this->asset)
 
-                ModalToggle::make('Change Asset')
-                    ->modal('assetModal')
-                    ->method('changeAsset')
-                    ->icon('bs.box-arrow-up-right'),
-
-                
-            ])->title('Asset Details'),
-
-            Layout::modal('assetModal', AssetSelectionListener::class, )->title('Change Threat'),
-                
-            Layout::rows([
-                Group::make([
-                    Input::make("depend_on")
-                    ->title('Asset Depend On')
-                    ->value(optional($this->asset_valuation->first())->depend_on),
-
-                    Input::make("depended_asset")
-                    ->title('Depended Asset')
-                    ->value(optional($this->asset_valuation->first())->depended_asset),
+    
+                    
                 ]),
             ]),
             
+            Layout::modal('chooseAsset', AssetSelectionListener::class,)->title(!$this->asset ? __('Choose Asset') : __('Change Asset')),
+            
+            Layout::accordion([
+                "Asset Dependency" => Layout::rows([
+                    Group::make([
+                        Input::make("depend_on")
+                        ->title('Asset Depend On')
+                        ->value(optional($this->asset_valuation->first())->depend_on),
+
+                        Input::make("depended_asset")
+                        ->title('Depended Asset')
+                        ->value(optional($this->asset_valuation->first())->depended_asset),
+                    ]),
+                ]),
+            ]),         
 
             ValuationListener::class,
            
@@ -129,6 +162,15 @@ class Valuation extends Screen
     {
 
         try {
+
+            $flag=0;
+
+            $json = json_encode([
+                'confidential' => $request->input('confidential_5'),
+                'integrity' => $request->input('integrity_5'),
+                'availability' => $request->input('availability_5'),
+                'asset_value' => $request->input('asset_value_5'),
+            ]);
             // Directly pass values using null coalescing operator in the updateOrCreate method
             ValuationModel::updateOrCreate(
                 ['asset_id' => $this->asset->id], // Use threat_id from the current threat (from headers or query)
@@ -139,16 +181,56 @@ class Valuation extends Screen
                     'integrity' => $request->input('integrity') ?? $this->asset_valuation->first()->integrity,
                     'availability'  => $request->input('availability') ?? $this->asset_valuation->first()->safeguard_group,
                     'asset_value'  => $request->input('asset_value' ) ?? $this->asset_valuation->first()->asset_value,
+                    'scale_5' => $json ?? $this->asset_valuation->first()->scale_5,
                 ]
             );
 
-            Toast::info('Asset valuation saved successfully.');
-            return redirect()->route('platform.assessment.threat', [$this->asset->id]);
-           
+            if($request->input('asset_value' ) !== $this->asset_valuation->first()->asset_value && $this->asset_valuation->first()->asset_value !== null){
+                RMSD::whereHas('threat', function ($query) {
+                    $query->where('asset_id', $this->asset->id);
+                })
+                ->update(['impact_level' => null, 'risk_level' => null , 'business_loss' => null, 'likelihood' => null]);
+
+
+                $flag=1;    
+
+            }
+
+            if($request->input('asset_value_5') !== $this->asset_value_5 && $this->asset_value_5 !== null){
+                RMSD::whereHas('threat', function ($query) {
+                    $query->where('asset_id', $this->asset->id);
+                })
+                ->update(['scale_5' => ['impact_level' => null , 'risk_level' => null , 'business_loss' => null, 'likelihood' => null ]]);
+
+                
+                $flag=2;    
+            }
+
+            if($flag === 1){
+                Toast::info('Impact Level (Scale 3) has been reset in RMSD due to changes in Asset Value.');
+                Threat::where('asset_id', $this->asset->id)->update(['status' => 'Draft']);
+
+            }else if($flag === 2){
+                Toast::info('Impact Level (Scale 3) and Impact Level (Scale 5) has been reset in RMSD due to changes in Asset Value.');
+                Threat::where('asset_id', $this->asset->id)->update(['status' => 'Draft']);
+
+            }else{
+                Toast::info('Asset valuation saved successfully.');
+            }
+
+
+
+                   
 
         } catch (\Exception $e) {
             Toast::error('An error occurred while saving the asset valuation: ' . $e->getMessage());        
         }
+    }
+
+    public function next(){
+        return redirect()->route('platform.assessment.threat', [
+            'id' => $this->asset->id,
+        ]);
     }
 
     public function changeAsset(Request $request)
@@ -166,7 +248,7 @@ class Valuation extends Screen
                     'id' => $asset->id,
                 ]);
             } else {
-                Toast::error('No threat found for the selected asset.');
+                Toast::error('No asset found for the selected asset.');
                 return redirect()->back();
             }
         } catch (\Exception $e) {

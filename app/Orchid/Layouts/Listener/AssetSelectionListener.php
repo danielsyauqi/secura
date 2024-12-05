@@ -33,13 +33,14 @@ class AssetSelectionListener extends Listener
                     Select::make('asset_type')
                         ->title('Asset Type')
                         ->options([
-                            '' => 'Select Asset Type',
+                            '' => 'Choose Asset Type',
                             'Hardware' => 'Hardware',
                             'Software' => 'Software',
-                            'People' => 'People',
+                            'Work Process' => 'Work Process',
+                            'Human Resources' => 'Human Resources',
                             'Data and Information' => 'Data and Information',
-                            'Service (Supporting)' => 'Service (Supporting)',
-                            'Service (Accessibility)' => 'Service (Accessibility)', 
+                            'Services' => 'Services',
+                            'Premise' => 'Premise', 
                         ])
                         ->help('Select a asset type.')
                         ->placeholder('Select asset type')
@@ -51,6 +52,7 @@ class AssetSelectionListener extends Listener
                         ->title('Current Asset')
                         ->options($this->query->get('asset_name_options', ['' => 'Choose assets'])) // Include all options in the dropdown
                         ->help('Select the current asset')
+                        ->value($this->query->get('asset_name', ''))
 
 
                 ]),
@@ -71,6 +73,7 @@ class AssetSelectionListener extends Listener
     {
         // Get the selected asset type from the request
         $assetType = $request->input('asset_type');
+        
 
         // Fetch assets based on the selected asset type (if selected)
         $assetOptions = [];

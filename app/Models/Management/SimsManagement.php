@@ -23,6 +23,8 @@ class SimsManagement extends Model
         'scope_definition',
         'approval_date',
         'approval_attachment',
+        'image_logo',
+
     ];
 
 

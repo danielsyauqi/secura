@@ -16,6 +16,7 @@ use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Toast;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Support\Facades\Layout;
+use Orchid\Screen\Fields\SimpleMDE;
 use Illuminate\Support\Facades\Storage;
 use App\Orchid\Layouts\Management\MemberListLayout;
 use App\Models\Management\SimsManagement as SimsManagementModel;
@@ -24,13 +25,12 @@ use App\Models\Management\SimsManagement as SimsManagementModel;
 class SimsManagement extends Screen
 {
     /**
-     * Fetch data to be displayed on the screen.    
+     * Fetch data to be displayed on the screen.
      *
      * @return array
      */
 
     public $sims;
-    public$teamMembers;
     public $users;
 
      public function query(): array
@@ -41,7 +41,7 @@ class SimsManagement extends Screen
             'sims' => $sims,
         ];
      }
- 
+
      /**
       * The name of the screen displayed in the header.
       */
@@ -49,7 +49,7 @@ class SimsManagement extends Screen
      {
          return 'SIMS Management';
      }
- 
+
      /**
       * Display header description.
       */
@@ -57,12 +57,12 @@ class SimsManagement extends Screen
      {
          return '
 
-        The SIMS team is comprised of security, ICT, and business operations experts, ensuring that SIMS, aligned with ISO 27001 standards, produces accurate risk assessments for organizational assets. 
+        The SIMS team is comprised of security, ICT, and business operations experts, ensuring that SIMS, aligned with ISO 27001 standards, produces accurate risk assessments for organizational assets.
         Each member brings specialized knowledge to manage security and operational risks effectively, allowing SIMS to support comprehensive risk mitigation strategies while meeting ISO 27001 compliance.';
      }
- 
- 
-     
+
+
+
 
         /**
         * The screen's action buttons.
@@ -73,7 +73,7 @@ class SimsManagement extends Screen
      {
         return [
 
-                            
+
             Button::make('Save')
             ->method('saveSims')
             ->icon('bs.check-circle')
@@ -81,7 +81,7 @@ class SimsManagement extends Screen
 
         ];
      }
- 
+
      /**
       * The screen's layout elements.
       *
@@ -110,7 +110,7 @@ class SimsManagement extends Screen
                         ->value($this->sims->standard_num)
                         ->horizontal(),
 
-                    
+
                 ]),
 
                 Group::make(array_filter([
@@ -118,32 +118,36 @@ class SimsManagement extends Screen
                         ->type('date')
                         ->title('Approval Date')
                         ->placeholder('YYYY-MM-DD')
+                        ->help('Enter the date of approval')
                         ->value($this->sims->approval_date)
                         ->horizontal(),
 
                     Input::make('sims.approval_attachment')
                         ->type('file')
+                        ->help('Upload the approval attachment')
                         ->title('Approval Attachment')
                         ->horizontal(),
 
-                    
+
                 ])),
 
                 Group::make([
-                TextArea::make('scope_definition')
-                        ->title('Scope Definition')
-                        ->horizontal()
-                        ->value($this->sims->scope_definition)
-                        ->rows(10),
+                
 
                 $this->sims->approval_attachment ? Link::make('View Attachment')
                 ->href(Storage::url($this->sims->approval_attachment))
                 ->target('_blank')
-                ->title('View Attachment')
+                ->style('width:19.5%; margin-left:96%;')
+                ->type(Color::INFO)
                 ->horizontal() : null,
-                        
+
 
                 ]),
+
+                SimpleMDE::make('scope_definition')
+                    ->title('Scope Definition')
+                    ->popover('Enter the scope definition')
+                    ->value($this->sims->scope_definition),
 
             ]),
 
@@ -158,7 +162,7 @@ class SimsManagement extends Screen
                 'standard_num' => 'required',
             ]);
 
-            
+
 
             // Find the existing record by ID
             $sims = SimsManagementModel::find(1);
@@ -190,6 +194,6 @@ class SimsManagement extends Screen
             // Display error message
             Toast::error('An error occurred while updating SIMS data: ' . $e->getMessage());
     }
-    }   
+    }
 
 }

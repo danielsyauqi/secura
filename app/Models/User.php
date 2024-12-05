@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use Orchid\Screen\AsSource;
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
+use Orchid\Attachment\Attachable;
 use App\Orchid\Presenters\UserPresenter;
 use Orchid\Filters\Types\WhereDateStartEnd;
 use Orchid\Platform\Models\User as Authenticatable;
 
 class User extends Authenticatable
 {
+
+    use AsSource, Attachable;
     /**
      * The attributes that are mass assignable.
      *
