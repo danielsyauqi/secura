@@ -23,7 +23,7 @@
         src="/default-logo.png"
         alt="Nuklear Malaysia Logo"
         class="img-fluid mb-2"
-        style="width: 200px; height: auto; display: block; margin: 0 auto;"
+        style="width: 180px; height: auto; display: block; margin: 0 auto;"
     >
 
     <!-- App Name Text -->

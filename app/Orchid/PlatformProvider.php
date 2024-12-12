@@ -121,7 +121,12 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Log Out')
                 ->title('System')
                 ->icon('bs.door-open')
-                ->route('platform.main', ['logout' => 'true']),                
+                ->route('platform.main', ['logout' => 'true']),    
+                
+            Menu::make('Support Desk')
+                ->icon('bs.exclamation-square-fill')
+                ->target('_blank')
+                ->href('http://sysdesk.nuclearmalaysia.gov.my/'),
 
             // Menu::make('Orchid Elements')
             //     ->icon('bs.plus')
