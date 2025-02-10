@@ -1,6 +1,8 @@
 # SECURA - Risk Assessment System
 
-<img src="public/default-logo.png" alt="Alt Text" width="200" height="200">
+<div align="center">
+  <img src="public/default-logo.png" alt="Alt Text" width="200" height="200">
+</div>
 
 ## About
 SecuRA (Secured Risk Assessment) is a cutting-edge, web-based platform designed to replace outdated and inefficient risk management systems. With a focus on automation, security, and ease of use, SecuRA revolutionizes the way organizations track assets, assess risks, and generate audit reports. By moving away from manual processes like Excel, SecuRA offers a streamlined solution that enhances efficiency and minimizes human error.
