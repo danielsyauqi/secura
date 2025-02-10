@@ -1,7 +1,7 @@
 # SECURA - Risk Assessment System
 
 <div align="center">
-  <img src="public/secura-banner.png" alt="Alt Text" width="200" height="200">
+  <img src="public/secura-banner.png" alt="Alt Text">
 </div>
 
 ## About
