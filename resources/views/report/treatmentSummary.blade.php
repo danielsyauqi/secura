@@ -112,12 +112,21 @@
 </head>
 <body>
     <h3 style="text-align:left; font-size:16px; margin-left: 10px;">SULIT</h3>
-    <div style="text-align: center; margin-top: 100px;" class="main-page">
-        <img src="{{ public_path('/default-logo.png') }}" alt="Malaysian Nuclear Agency Logo" style="width: 250px; height: auto;">
-        <h1>Malaysian Nuclear Agency</h1>
-        <h2>Risk Treatment Plan Summary Report </h2>
+    <div style="text-align: center; margin-top: 100px">
+        <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 250px; height: auto;">
+        @php
+        // Fetch the record from the database
+        $orgProfile = \App\Models\OrgProfile::find(1);
+    @endphp
+    
+    <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
+    <h2>Risk Treatment Summary Report</h2>
         <p>Date: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
     </div>
+
+</div>
+
+
 
 
 
@@ -128,10 +137,15 @@
     <div class="page-break">
         <header>
             <div class="header">
-                <img src="{{ public_path('/default-logo.png') }}" alt="">
+                <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 50px; height: auto;">
                 <div class="header-1">
-                    <h1>Malaysian Nuclear Agency</h1>
-                    <p>Risk Treatment Summary Report</p>
+                    @php
+                    // Fetch the record from the database
+                    $orgProfile = \App\Models\OrgProfile::find(1);
+                @endphp
+                
+                <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
+                <p>Risk Treatment Summary Report</p>
                 </div>
             </div>
         </header>
@@ -413,5 +427,4 @@
 
 
 </html>
-
 

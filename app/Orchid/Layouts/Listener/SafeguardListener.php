@@ -49,11 +49,16 @@ class SafeguardListener extends Listener
                         ->help('Select the safeguard group.'),
 
                     Select::make('safeguard_id')
-                    ->options($this->query->get('safeguard_id_options', ['' => 'Choose safeguard ID']))
+                    ->options($this->query->get('safeguard_id_options', SafeguardOptions::getSafeguardIdOptions($this->query->get('safeguard_group'),'Safeguard')))
                     ->title('Add/Update Safeguard ID')
                     ->help('Select the safeguard id.')
                     
                 ]),
+
+                Button::make(__('Save'))
+                    ->icon('save')
+                    ->type(Color::PRIMARY)
+                    ->method('save'),
             ]),
 
 

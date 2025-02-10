@@ -67,11 +67,11 @@ class ThreatListener extends Listener
         $threatGroup = $request->input('threat_group');
 
         // Fetch dynamic options for vuln_name based on the selected vuln_group
-        $vulnNameOptions = ThreatGroupOptions::getThreatGroupOptions($threatGroup);
+        $threatNameOptions = ThreatGroupOptions::getThreatGroupOptions($threatGroup);
 
         return $repository
             ->set('threat_group', $threatGroup)
-            ->set('threat_details_options', $vulnNameOptions);
+            ->set('threat_details_options', $threatNameOptions);
     
     }
 }

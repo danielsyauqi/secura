@@ -59,13 +59,19 @@ class VulnerableListener extends Listener
 
                     Select::make('vuln_name')
                         ->options(
-                            $this->query->get('vuln_name_options', ['' => 'Choose vulnerability type'])
+                            $this->query->get('vuln_name_options', VulnGroupOptions::getVulnerabilityGroupOptions($this->query->get('vuln_group')))
                         )
                         ->title('Add/Update Vulnerability Details')
-                        ->help('Select the vulnerability details.')
+                        ->help('Select the vulnerability details.'),
+
+                   
 
                 ]),
 
+                Button::make(__('Save'))
+                    ->icon('save')
+                    ->type(Color::PRIMARY)
+                    ->method('save'),
             ]),
         ];
     }

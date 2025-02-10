@@ -131,14 +131,14 @@ class UserProfileScreen extends Screen
                 'required',
                 Rule::unique(User::class, 'email')->ignore($request->user()),
             ],
-            'user.profile_photo' => 'nullable|mimes:png,jpg,jpeg,gif|max:10240',
+            'profile_photo' => 'nullable|mimes:png,jpg,jpeg,gif|max:10240',
 
         ]);
 
         $user = $request->user();
 
-        if ($request->hasFile('user.profile_photo')) {
-            $file = $request->file('user.profile_photo');
+        if ($request->hasFile('profile_photo')) {
+            $file = $request->file('profile_photo');
 
             // Remove old profile photo if exists
             if ($user->profile_photo) {

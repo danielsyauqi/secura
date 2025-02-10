@@ -29,22 +29,6 @@ class PlatformProvider extends OrchidServiceProvider
     }
 
     /**
-     * Check if the route ID is present.
-     *
-     * @return bool
-     */
-    private function isRouteIdPresent(): bool
-    {
-        return request()->route('id') !== null;
-    }
-
-    private function isRouteThreatIDPresent(): bool
-    {
-        return request()->route('threat_id') !== null;
-    }
-
-
-    /**
      * Register the application menu.
      *
      * @return Menu[]
@@ -62,10 +46,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route(config('platform.index')),
             
                 
-            Menu::make('SIMS Management ')
+            Menu::make('SecuRA Management ')
             ->icon('bs.folder')
             ->list([
-                Menu::make('ISMS/ISO Management')->route('platform.management.SimsManagement'),
+                Menu::make('ISMS/ISO Management')->route('platform.management.SecuraManagement'),
                 Menu::make('Team Management')->route('platform.management.TeamManagement'),
             ])->divider(),
 
@@ -100,6 +84,35 @@ class PlatformProvider extends OrchidServiceProvider
                         ->route('platform.assessment.treatment', ['id' => request()->route('id'), 'threat_id' => request()->route('threat_id')]),
 
                 ]),
+
+            Menu::make('Bulk Edit')
+                ->icon('bs.table')
+                ->list([
+                    Menu::make('Valuation of Asset')
+                        ->route('platform.bulk.valuation'),
+
+                    Menu::make('Threat Classification')
+                        ->route('platform.bulk.threat'),
+
+                    Menu::make('Asset Vulnerability')
+                        ->route('platform.bulk.vulnerable'),
+
+                    Menu::make('Asset Safeguard')
+                        ->route('platform.bulk.safeguard'),
+
+                    Menu::make('Asset Impact')
+                        ->route('platform.bulk.impact'),
+
+                    Menu::make('Risk Level Calculation')
+                        ->route('platform.bulk.riskCalculation'),
+
+                    Menu::make('Protection Strategy and Decision')
+                        ->route('platform.bulk.protection'),
+
+                    Menu::make('Risk Treatment Plan')
+                        ->route('platform.bulk.treatment'),
+
+                ]),
                 
             Menu::make('Print Report')
                 ->icon('bs.printer')
@@ -109,19 +122,23 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make(__('Users'))
                 ->icon('bs.people')
                 ->route('platform.systems.users')
-                ->canSee(isset($userPermissions['platform.systems.users']) && $userPermissions['platform.systems.users'] === '1')
+                ->permission('platform.systems.users')
                 ->title(__('Access Controls')),
 
             Menu::make(__('Roles'))
                 ->icon('bs.shield')
                 ->route('platform.systems.roles')
-                ->canSee(isset($userPermissions['platform.systems.roles']) && $userPermissions['platform.systems.roles'] === '1') 
+                ->permission('platform.systems.roles')
                 ->divider(),
 
-            Menu::make('Log Out')
+            Menu::make('Organization Profile')
                 ->title('System')
+                ->icon('bs.gear-fill')
+                ->route('platform.organizational.profile'),
+                
+            Menu::make('Log Out')
                 ->icon('bs.door-open')
-                ->route('platform.main', ['logout' => 'true']),    
+                ->route('platform.main', ['logout' => 'true']),
                 
             Menu::make('Support Desk')
                 ->icon('bs.exclamation-square-fill')

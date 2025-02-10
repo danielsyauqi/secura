@@ -4,9 +4,11 @@ namespace App\Orchid\Screens\Assessment;
 
 use Orchid\Screen\Screen;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Label;
+use Orchid\Screen\Fields\Select;
 use App\Models\Assessment\Threat;
 use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Toast;
@@ -20,10 +22,9 @@ use App\Models\Management\AssetManagement;
 use App\Models\Assessment\RMSD as RMSDModel;
 use App\Orchid\Layouts\Listener\ProtectionListener;
 use App\Orchid\Layouts\Listener\AllSelectionListener;
-use App\Orchid\Layouts\Listener\AssetSelectionListener;
 use App\Models\Assessment\Treatment as TreatmentModel;
+use App\Orchid\Layouts\Listener\AssetSelectionListener;
 use App\Models\Assessment\Protection as ProtectionModel;
-use Illuminate\Routing\Route;
 
 class Treatment extends Screen
 {
@@ -123,7 +124,7 @@ class Treatment extends Screen
         /** @var TYPE_NAME $this */
         return [
             
-            Layout::accordionClosed([
+            Layout::accordion([
                 'Asset Information' => Layout::rows([
                     Group::make([
                         Input::make('asset.name')
@@ -132,118 +133,59 @@ class Treatment extends Screen
                             ->value(value: optional(value: $this->asset)->type)
                             ->readonly(),
 
-                        Input::make('asset.type')
-                            ->title('Asset Type')
-                            ->style('color: #43494f;')
-                            ->value(value: optional(value: $this->asset)->type)
-                            ->readonly(),
+                            Input::make('threat.name')
+                                ->title('Current Threat')
+                                ->style('color: #43494f;')
+                                ->value(optional($this->threat)->threat_name)
+                                ->readonly(),
                     ]),
+
+                    Group::make([
 
                     ModalToggle::make('Change Asset')
                         ->modal('assetModal')
                         ->method('changeAsset')
                         ->icon('bs.box-arrow-up-right'),
-                ]),
-            ]),
 
-            Layout::accordionClosed([
-
-                'Threat Information' =>  Layout::rows([
-                    Group::make([
-                        Input::make('threat.name')
-                                ->title('Current Threat')
-                                ->style('color: #43494f;')
-                                ->value(optional($this->threat)->threat_name)
-                                ->readonly(),
-    
-                        Input::make('threat.group')
-                            ->title('Threat Group')
-                            ->style('color: #43494f;')
-                            ->value(optional($this->threat)->threat_group)
-                            
-                            ->readonly(),
-                    ]),
                     ModalToggle::make(
-                        !$this->threat
-                            ? (!$this->asset ? __('Choose Asset and Threat') : __('Choose Threat'))
-                            : __('Change Threat')
-                    )->icon('bs.box-arrow-up-right')
-
-                    ->modal(!$this->threat && !$this->asset ? 'chooseAssetAndThreat' : 'chooseThreat')
-                    ->method(!$this->threat && !$this->asset ? 'changeAssetAndThreat' : 'changeThreat')
-                    ->open(!$this->threat),
-                ]),
-            ]),
-            Layout::accordionClosed([
-
-                'Risk Management and Safeguard Data' => Layout::rows([  
-                    Group::make([
-                        Input::make('safeguard_id')
-                            ->title('Safeguard ID')
-                            ->value(optional($this->rmsd ? $this->rmsd->first() : null)->safeguard_id)
-                            ->readonly()
-                            ->style('color: #43494f;'),
+                            !$this->threat
+                                ? (!$this->asset ? __('Choose Asset and Threat') : __('Choose Threat'))
+                                : __('Change Threat')
+                        )->icon('bs.box-arrow-up-right')
     
-                        Input::make('existing_safeguard')
-                            ->title('Existing Safeguard')
-                            ->value(optional($this->rmsd ? $this->rmsd->first() : null)->existing_safeguard)
-                            ->readonly()
-                            ->style('color: #43494f;'),
+                        ->modal(!$this->threat && !$this->asset ? 'chooseAssetAndThreat' : 'chooseThreat')
+                        ->method(!$this->threat && !$this->asset ? 'changeAssetAndThreat' : 'changeThreat')
+                        ->open(!$this->threat),
+
                     ]),
-    
-    
+
                     Group::make([
 
-                        Input::make('asset_value')
-                            ->title('Asset Value')
-                            ->value(optional($this->valuation ? $this->valuation->first() : null)->asset_value)
-                            ->readonly()
-                            ->style('color: #43494f;'),
+                        Label::make('risk_level')
+                        ->title('Risk Level: ')
+                        ->value(optional($this->rmsd?->first())->risk_level),
+
+                        Label::make('current')
+                        ->title('Safeguard ID:')
+                        ->value(optional($this->rmsd?->first())->safeguard_id),
+
+                        Label::make('protection_id')
+                        ->title('Protection ID: ')
+                        ->value(optional($this->protection?->first())->protection_id),
+
+                        Label::make('decision')
+                        ->title('Action: ')
+                        ->value(optional($this->protection?->first())->decision),
 
 
-                        Input::make('risk_level')
-                            ->title('Risk Level')
-                            ->value(optional($this->rmsd ? $this->rmsd->first() : null)->risk_level)
-                            ->readonly()
-                            ->style('color: #43494f;'),
-                            
                     ]),
-    
-
                 ]),
-
-            
-            ]),
-                
-            Layout::accordionShow([    
-                'Protection Strategy and Decision' => Layout::Rows([
-                        Group::make([
-                            Label::make('current')
-                                ->title('Current Protection Type:')
-                                ->value(optional($this->protection ? $this->protection->first() : null)->protection_type)
-                                ->canSee((bool) optional($this->protection ? $this->protection->first() : null)->protection_type),
-
-                            Label::make('current')
-                                ->title('Current Protection Strategy:')
-                                ->value(optional($this->protection ? $this->protection->first() : null)->protection_strategy)
-                                ->canSee((bool) optional($this->protection ? $this->protection->first() : null)->protection_strategy),
-
-                            Label::make('current')
-                                ->title('Current Protection ID:')
-                                ->value(optional($this->protection ? $this->protection->first() : null)->protection_id)
-                                ->canSee((bool) optional($this->protection ? $this->protection->first() : null)->protection_id),
-                        ]),
-
-
-                ]),
-
             ]),
 
             
             
 
-            Layout::accordionShow([
-                "Treatment Plan" => Layout::rows([
+                Layout::rows([
 
                     Group::make([
                     Input::make('start_date')
@@ -269,7 +211,7 @@ class Treatment extends Screen
                             ->help('Include professionals with expertise in security, ICT, and the organization’s core business operations.')
                             ->value(optional($this->treatment ? $this->treatment->first() : null)->personnel),
                             
-                        RadioButtons::make("residual_risk")
+                        Select::make("residual_risk")
                             ->title('Residual Risk')
                             ->help('Determine the residual risk.')
                             ->options([
@@ -279,9 +221,7 @@ class Treatment extends Screen
                             ])
                             ->value(optional($this->treatment ? $this->treatment->first() : null)->residual_risk),
 
-                    ]),
-
-                    RadioButtons::make("residual_risk_5")
+                        Select::make("residual_risk_5")
                             ->title('Residual Risk (Scale 5 Optional)')
                             ->help('Determine the residual risk.')
                             ->options([
@@ -292,12 +232,11 @@ class Treatment extends Screen
                                 'Very High' => 'Very High',
                             ])
                             ->value(optional($this->treatment ? $this->treatment->first() : null)->scale_5),
+
+                    ]),         
                    
-                ])
+                ]),
 
-            ]),
-
-         
             Layout::modal(
                 'chooseThreat',
                 AllSelectionListener::class

@@ -43,18 +43,10 @@ class Valuation extends Screen
         $this->asset_value = optional($this->asset_valuation->first())->asset_value ?? null;
 
 
-        $scale_5 = json_decode(optional($this->asset_valuation->first())->scale_5, true) ?? [];
-        $this->confidential_5 = $scale_5['confidential'] ?? null;
-        $this->integrity_5 = $scale_5['integrity'] ?? null;
-        $this->availability_5 = $scale_5['availability'] ?? null;
-        $this->asset_value_5 = $scale_5['asset_value'] ?? null;
-
-        Log::info('Scale 5 values:', [
-            'confidential_5' => $this->confidential_5,
-            'integrity_5' => $this->integrity_5,
-            'availability_5' => $this->availability_5,
-            'asset_value_5' => $this->asset_value_5,
-        ]);
+        $this->confidential_5 = optional($this->asset_valuation->first())->confidential_5 ?? null;
+        $this->integrity_5 = optional($this->asset_valuation->first())->integrity_5 ?? null;
+        $this->availability_5 = optional($this->asset_valuation->first())->availability_5 ?? null;
+        $this->asset_value_5 =  optional($this->asset_valuation->first())->asset_value_5 ?? null;
 
 
 
@@ -75,6 +67,8 @@ class Valuation extends Screen
             'integrity_5' => $this->integrity_5,
             'availability_5' => $this->availability_5,
             'asset_value_5' => $this->asset_value_5,
+            'depend_on' => $this->asset_valuation->first()->depend_on ?? null,
+            'depended_asset' => $this->asset_valuation->first()->depended_asset ?? null,
 
         ];
     }
@@ -109,7 +103,7 @@ class Valuation extends Screen
 
         return [
 
-            Layout::accordionShow([
+            Layout::accordion([
                 'Asset Information' => Layout::rows([
                     Group::make([
                         Input::make('asset.name')
@@ -138,20 +132,7 @@ class Valuation extends Screen
             ]),
             
             Layout::modal('chooseAsset', AssetSelectionListener::class,)->title(!$this->asset ? __('Choose Asset') : __('Change Asset')),
-            
-            Layout::accordion([
-                "Asset Dependency" => Layout::rows([
-                    Group::make([
-                        Input::make("depend_on")
-                        ->title('Asset Depend On')
-                        ->value(optional($this->asset_valuation->first())->depend_on),
-
-                        Input::make("depended_asset")
-                        ->title('Depended Asset')
-                        ->value(optional($this->asset_valuation->first())->depended_asset),
-                    ]),
-                ]),
-            ]),         
+              
 
             ValuationListener::class,
            

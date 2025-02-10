@@ -4,12 +4,12 @@
         <div class="col col-lg-7 mt-6 p-4">
 
             <h2 class="text-dark fw-light lh-lg">
-                <b>What is SIMS?</b>
+                <b>What is SecuRA?</b>
             </h2>
 
             <p style="text-align:justify; ">
-                SIMS is designed to streamline your risk management process by providing an intuitive and user-friendly platform. 
-                Whether you are managing assets, performing risk assessments, or generating reports, SIMS offers a comprehensive and structured approach to 
+                SecuRA is designed to streamline your risk management process by providing an intuitive and user-friendly platform. 
+                Whether you are managing assets, performing risk assessments, or generating reports, SecuRA offers a comprehensive and structured approach to 
                 ensure your projects are secure, compliant, and optimized.
             </p>
         </div>

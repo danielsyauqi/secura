@@ -21,7 +21,7 @@ class ProtectionListener extends Listener
 {
 
 
-    protected $targets = ['protection_strategy', 'protection_id'];
+    protected $targets = ['protection_strategy', 'protection_id', 'decision' ];
 
     protected function layouts(): iterable
     {
@@ -45,11 +45,29 @@ class ProtectionListener extends Listener
                         ->help('Select the protection strategy.'),
 
                     Select::make('protection_id')
-                    ->options($this->query->get('protection_id_options', ['' => 'Choose protection ID']))
+                    ->options($this->query->get('protection_id_options',SafeguardOptions::getSafeguardIdOptions($this->query->get('protection_strategy'),'Protection')))
                     ->title('Add/Update Protection ID')
-                    ->help('Select the protection id.')
+                    ->help('Select the protection id.'),
+
+                    Select::make('decision')
+                    ->title('Decision')
+                    ->options([
+                        'Accept' => 'Accept',
+                        'Reduce' => 'Reduce',
+                        'Transfer' => 'Transfer',
+                        'Avoid' => 'Avoid',
+                    ])
+                    ->help('Determine the decision of the protection.'),
                     
                 ]),
+
+               
+
+                
+                Button::make(__('Save'))
+                ->icon('save')
+                ->type(Color::PRIMARY)
+                ->method('save'),
             ]),
 
 
@@ -59,7 +77,7 @@ class ProtectionListener extends Listener
     public function handle(Repository $repository, Request $request): Repository
     {
         $protection_type = $request->input('protection_type');
-        $selectedprotectionGroup = $request->input('protection_strategy');
+        $selectedprotectionGroup = $request->input('protection_strategy') ?? $this->query->get('protection_strategy');
         $protection_id = $request->input('protection_id'); // Log this value to confirm
 
 
@@ -73,7 +91,8 @@ class ProtectionListener extends Listener
         ->set('protection_type', $protection_type)
         ->set('protection_id_options', $protectionIdOptions)
         ->set('protection_strategy', $selectedprotectionGroup)
-        ->set('protection_id', $protection_id);
+        ->set('protection_id', $protection_id)
+        ->set('decision', $request->input('decision'));
     }
 
 }

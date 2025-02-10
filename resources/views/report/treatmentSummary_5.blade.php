@@ -111,13 +111,22 @@
     </style>
 </head>
 <body>
-    <h3 style="text-align:left; font-size:16px; margin-left: 10px;">SULIT</h3>
-    <div style="text-align: center; margin-top: 100px;" class="main-page">
-        <img src="{{ public_path('/default-logo.png') }}" alt="Malaysian Nuclear Agency Logo" style="width: 250px; height: auto;">
-        <h1>Malaysian Nuclear Agency</h1>
-        <h2>Risk Treatment Plan Summary Report (Scale 5)</h2>
+    
+    <div style="text-align: center; margin-top: 100px">
+        <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 250px; height: auto;">
+        @php
+        // Fetch the record from the database
+        $orgProfile = \App\Models\OrgProfile::find(1);
+    @endphp
+    
+    <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
+    <h2>Risk Treatment Summary Report(Scale 5)</h2>
         <p>Date: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
     </div>
+
+</div>
+
+
 
 
 
@@ -128,14 +137,19 @@
     <div class="page-break">
         <header>
             <div class="header">
-                <img src="{{ public_path('/default-logo.png') }}" alt="">
+                <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 50px; height: auto;">
                 <div class="header-1">
-                    <h1>Malaysian Nuclear Agency</h1>
-                    <p>Risk Treatment Summary Report (Scale 5)</p>
+                    @php
+                    // Fetch the record from the database
+                    $orgProfile = \App\Models\OrgProfile::find(1);
+                @endphp
+                
+                <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
+                <p>Risk Treatment Summary Report (Scale 5)</p>
                 </div>
             </div>
         </header>
-
+        
         <span class="pagenum">Page </span>
 
         <h3 style="text-align:left; font-size: 11px;">SULIT</h3>
@@ -300,11 +314,11 @@
                             ->join('asset_rmsd', 'asset_threat.id', '=', 'asset_rmsd.threat_id') // Join with asset_rmsd
                             ->select('asset_management.type',
                                 // Extracting values from the scale_5 JSON column
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "Low" THEN 1 ELSE 0 END) as Low'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "Medium" THEN 1 ELSE 0 END) as Medium'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "High" THEN 1 ELSE 0 END) as High'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "Very Low" THEN 1 ELSE 0 END) as VeryLow'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "Very High" THEN 1 ELSE 0 END) as VeryHigh'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "Low" THEN 1 ELSE 0 END) as Low'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "Medium" THEN 1 ELSE 0 END) as Medium'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "High" THEN 1 ELSE 0 END) as High'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "Very Low" THEN 1 ELSE 0 END) as VeryLow'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "Very High" THEN 1 ELSE 0 END) as VeryHigh'),
                                 DB::raw('COUNT(*) as count')
                             )
                             ->whereIn('asset_management.type', $customOrder) // Fetch only specified types
@@ -425,5 +439,4 @@
 
 
 </html>
-
 

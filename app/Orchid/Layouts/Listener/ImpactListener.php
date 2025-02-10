@@ -2,11 +2,14 @@
 
 namespace App\Orchid\Layouts\Listener;
 
+use Orchid\Support\Color;
 use Illuminate\Http\Request;
 use Orchid\Screen\Repository;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Label;
+use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Layout;
 use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Layouts\Listener;
@@ -32,71 +35,113 @@ class ImpactListener extends Listener
     protected function layouts(): iterable
     {
         return [
-            Layout::rows([
 
-                Input::make("asset_value")
-                    ->title('Asset Value')
-                    ->disabled()
-                    ->value(optional($this->query->get('asset_value'))->value())
-                    ->help('Please refer from this asset value.')
-                    ->style('color: #43494f;'),
+            Layout::tabs([
 
+                "Scale 3" => Layout::rows([
 
-                RadioButtons::make("business_loss")
-                ->title('Business Loss')
-                ->options([
-                    'Low' => 'Low',
-                    'Medium' => 'Medium',
-                    'High' => 'High',
-                ])
-                ->value(optional($this->query->get('business_loss'))->value())
-                ->help('Determine the business loss.'),
+                    Group::make([
 
-                Input::make("impact_level")
-                ->title('Impact')
-                ->style('color: #43494f;')
-                ->readonly()
-                ->value(optional( $this->query->get('impact_level'))->value())
-                ->help('Determine the business loss.'),
- 
-            
-            ]),
+                        Input::make("asset_value")
+                        ->title('Asset Value')
+                        ->disabled()
+                        ->value(optional($this->query->get('asset_value'))->value())
+                        ->help('Please refer from this asset value.')
+                        ->style('color: #43494f; width:50%'),
+    
+    
+                        Select::make("business_loss")
+                        ->title('Business Loss')
+                        ->style('width:50%')
+                        ->options([
+                            'Low' => 'Low',
+                            'Medium' => 'Medium',
+                            'High' => 'High',
+                        ])
+                        ->value(optional($this->query->get('business_loss'))->value())
+                        ->help('Determine the business loss.'),
 
-            Layout::accordionShow([
+        
+                    ]),
 
-                'Scale 5 (Optional)' => Layout::rows([
+                    Group::make([
+                        Input::make("impact_level")
+                        ->title('Impact')
+                        ->style('color: #43494f; width:50%')
+                        ->readonly()
+                        ->value(optional( $this->query->get('impact_level'))->value())
+                        ->help('Determine the business loss.'),
 
-                Input::make("asset_value_5")
-                    ->title('Asset Value (Scale 5)')
-                    ->disabled()
-                    ->value(optional($this->query->get('asset_value_5'))->value())
-                    ->help('Please refer from this asset value.')
-                    ->style('color: #43494f;'),
+                        
+                    Button::make(__('Save'))
+                    ->icon('save')
+                    ->type(Color::PRIMARY)
+                    ->method('save'),
 
+                      
+                    ]),
 
-                RadioButtons::make("business_loss_5")
-                ->title('Business Loss (Scale 5)')
-                ->options([
-                    'Very Low' => ' Very Low',
-                    'Low' => 'Low',
-                    'Medium' => 'Medium',
-                    'High' => 'High',
-                    'Very High' => 'Very High',
-                ])
-                ->value(optional($this->query->get('business_loss_5'))->value())
-                ->help('Determine the business loss.'),
-
-                Input::make("impact_level_5")
-                ->title('Impact (Scale 5)')
-                ->style('color: #43494f;')
-                ->readonly()
-                ->value(optional( $this->query->get('impact_level_5'))->value())
-                ->help('Determine the business loss.'),
- 
                 ]),
+
+
+                    'Scale 5 (Optional)' => Layout::rows([
+
+                        Group::make([
+    
+                    Input::make("asset_value_5")
+                        ->title('Asset Value (Scale 5)')
+                        ->disabled()
+                        ->value(optional($this->query->get('asset_value_5'))->value())
+                        ->help('Please refer from this asset value.')
+                        ->style('color: #43494f; width:50%'),
+    
+    
+                    Select::make("business_loss_5")
+                    ->style('width:50%')
+                    ->title('Business Loss (Scale 5)')
+                    ->options([
+                        'Very Low' => ' Very Low',
+                        'Low' => 'Low',
+                        'Medium' => 'Medium',
+                        'High' => 'High',
+                        'Very High' => 'Very High',
+                    ])
+                    ->value(optional($this->query->get('business_loss_5'))->value())
+                    ->help('Determine the business loss.'),
+
+                ]),
+
+                Group::make([
+    
+                    Input::make("impact_level_5")
+                    ->title('Impact (Scale 5)')
+                    ->style('color: #43494f; width:50%')
+                    ->options([
+                        'Very Low' => ' Very Low',
+                        'Low' => 'Low',
+                        'Medium' => 'Medium',
+                        'High' => 'High',
+                        'Very High' => 'Very High',
+                    ])
+                    ->readonly()
+                    ->value(optional( $this->query->get('impact_level_5'))->value())
+                    ->help('Determine the impact level.'),
+
+                    Button::make(__('Save'))
+                    ->icon('save')
+                    ->type(Color::PRIMARY)
+                    ->method('save'),
+
+                ]),
+     
+                    
                 
-            
+                ]),
+
             ]),
+            
+
+            
 
         ];
     }
@@ -130,8 +175,7 @@ class ImpactListener extends Listener
         };
 
         // Retrieve input values directly for scale 5
-        $scale_5 = json_decode(Valuation::where('asset_id', $assetID)->first()->scale_5 ?? '[]', true);
-        $asset_value_5= $scale_5['asset_value'] ?? null;
+        $asset_value_5 = Valuation::where('asset_id', $assetID)->pluck('asset_value_5')->first();
         $business_loss_5 = $request->input('business_loss_5');
 
         // Mapping for numeric totals based on string values for scale 5
@@ -150,13 +194,16 @@ class ImpactListener extends Listener
             default => '', // Optional default case
         };
 
+        log::info($asset_value_5);
+
         // Set values in the repository
         return $repository
             ->set('impact_level', $impact_level)
             ->set('business_loss', $business_loss)
             ->set('impact_level_5', $impact_level_5)
             ->set('business_loss_5', $business_loss_5)
-            ->set('asset_value', $asset_value);
+            ->set('asset_value', $asset_value)
+            ->set('asset_value_5', $asset_value_5);
     }
 }
 

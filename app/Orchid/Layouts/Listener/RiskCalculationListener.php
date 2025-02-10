@@ -2,13 +2,17 @@
 
 namespace App\Orchid\Layouts\Listener;
 
+use Orchid\Support\Color;
 use Illuminate\Http\Request;
 use Orchid\Screen\Repository;
+use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\RadioButtons;
+use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Layout;
 use Illuminate\Support\Facades\Log;
 use Orchid\Screen\Layouts\Listener;
+use Orchid\Screen\Fields\RadioButtons;
 
 class RiskCalculationListener extends Listener
 {
@@ -31,67 +35,94 @@ class RiskCalculationListener extends Listener
     {
         return [
 
-            Layout::accordionShow([
+            Layout::tabs([
 
-                'Scale 3 (Mandatory)' => Layout::rows([
-
-                    Input::make('impact_level')
-                        ->title('Impact Level')
-                        ->value(optional($this->query->get('impact_level'))->value())
-                        ->readonly()
-                        ->style('color: #43494f;'),
+                'Scale 3' => Layout::rows([
 
 
-                    RadioButtons::make('likelihood')
-                        ->title('Likelihood')
-                        ->options([
-                            'Low' => 'Low',
-                            'Medium' => 'Medium',
-                            'High' => 'High',
-                        ])
-                    ->value(optional($this->query->get('likelihood'))->value())
-                    ->help('Determine the likelihood of the threat.'),
+                    Group::make([
+                        Input::make('impact_level')
+                            ->title('Impact Level')
+                            ->value(optional($this->query->get('impact_level'))->value())
+                            ->readonly()
+                            ->help('Determine the impact level of the threat.')
+                            ->style('color: #43494f;'),
 
-                    Input::make('risk_level')
-                        ->title('Risk Level')
-                        ->value(optional($this->query->get('risk_level'))->value())
-                        ->readonly()
-                        ->style('color: #43494f;'),
+                        Select::make('likelihood')
+                            ->title('Likelihood')
+                            ->options([
+                                'Low' => 'Low',
+                                'Medium' => 'Medium',
+                                'High' => 'High',
+                            ])
+                            ->value(optional($this->query->get('likelihood'))->value())
+                            ->help('Determine the likelihood of the threat.'),
 
-                    Input::make('risk_owner')
-                        ->title('Risk Owner')
-                        ->value(optional($this->query->get('risk_owner'))->value())
-                        ->help('Determine the risk owner of the threat.'),
+                        Input::make('risk_level')
+                            ->title('Risk Level')
+                            ->value(optional($this->query->get('risk_level'))->value())
+                            ->readonly()
+                            ->help('Determine the risk level of the threat.')
+                            ->style('color: #43494f;'),
+
+                        Input::make('risk_owner')
+                            ->title('Risk Owner')
+                            ->value(optional($this->query->get('risk_owner'))->value())
+                            ->help('Determine the risk owner of the threat.'),
+
+
+                    ]),
+
+
+                    Button::make(__('Save'))
+                    ->icon('save')
+                    ->type(Color::PRIMARY)
+                    ->method('save'),
                 ]),
-            ]),
 
-            Layout::accordionShow([
                 'Scale 5 (Optional)' => Layout::rows([
-                    Input::make('impact_level_5')
-                        ->title('Impact Level')
-                        ->value(optional($this->query->get('impact_level_5'))->value())
-                        ->readonly()
-                        ->style('color: #43494f;'),
 
-                    RadioButtons::make('likelihood_5')
-                        ->title('Likelihood')
-                        ->options([
-                            'Very Low' => 'Very Low',
-                            'Low' => 'Low',
-                            'Medium' => 'Medium',
-                            'High' => 'High',
-                            'Very High' => 'Very High',
-                        ])
-                        ->value(optional($this->query->get('likelihood_5'))->value())
-                        ->help('Determine the likelihood of the threat.'),
+                    Group::make([
+                        Input::make('impact_level_5')
+                            ->title('Impact Level')
+                            ->value(optional($this->query->get('impact_level_5'))->value())
+                            ->readonly()
+                            ->help('Determine the impact level of the threat.')
+                            ->style('color: #43494f;'),
 
-                    Input::make('risk_level_5')
-                        ->title('Risk Level')
-                        ->value(optional($this->query->get('risk_level_5'))->value())
-                        ->readonly()
-                        ->style('color: #43494f;'),
+                        
+
+                        Select::make('likelihood_5')
+                            ->title('Likelihood')
+                            ->options([
+                                'Very Low' => 'Very Low',
+                                'Low' => 'Low',
+                                'Medium' => 'Medium',
+                                'High' => 'High',
+                                'Very High' => 'Very High',
+                            ])
+                            ->value(optional($this->query->get('likelihood_5'))->value())
+                            ->help('Determine the likelihood of the threat.'),
+
+                            Input::make('risk_level_5')
+                            ->title('Risk Level')
+                            ->value(optional($this->query->get('risk_level_5'))->value())
+                            ->readonly()
+                            ->help('Determine the risk level of the threat.')
+                            ->style('color: #43494f;'),
+
+                        
+
+
+                    ]),
+
+                    Button::make(__('Save'))
+                    ->icon('save')
+                    ->type(Color::PRIMARY)
+                    ->method('save'),
                 ]),
             ]),
+      
         ];
     }
 

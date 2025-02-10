@@ -30,6 +30,22 @@ class Treatment extends Model
 
     public function threat()
     {
-        return $this->belongsTo(Threat::class, 'threat_id');
+        return $this->belongsTo(Threat::class, 'threat_id', 'id');
+    }
+
+    public function asset()
+    {
+        return $this->belongsTo(\App\Models\Management\AssetManagement::class, 'threat_id', 'id')
+            ->through('threat');
+    }
+
+    public function rmsd()
+    {
+        return $this->belongsTo(RMSD::class, 'threat_id', 'threat_id');
+    }
+
+    public function protection()
+    {
+        return $this->belongsTo(Protection::class, 'threat_id', 'threat_id');
     }
 }

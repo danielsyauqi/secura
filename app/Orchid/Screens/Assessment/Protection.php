@@ -72,17 +72,17 @@ class Protection extends Screen
 
         }
 
-
+        $this->protection = ProtectionModel::where('threat_id', $threat_id)->get();
         return [
             'rmsd' => RMSDModel::where('threat_id', $threat_id)->get(),
             'threat' => Threat::find($threat_id),
             'asset' => $id ? AssetManagement::findOrFail($id) : new AssetManagement(),
             'assetID' => $id,
             'valuation' => Valuation::where('asset_id', $id)->get(),
-            'protection' => ProtectionModel::where('threat_id', $threat_id)->get(),            
-
-
-
+            'protection' => $this->protection,    
+            'protection_strategy' => $this->protection->first()->protection_strategy ?? null,        
+            'decision' => $this->protection->first()->decision ?? null, 
+            'protection_id' => $this->protection->first()->protection_id ?? null,
         ];
     }
 
@@ -116,7 +116,7 @@ class Protection extends Screen
 
         /** @var TYPE_NAME $this */
         return [
-            Layout::accordionClosed([
+            Layout::accordion([
                 'Asset Information' => Layout::rows([
                     Group::make([
                         Input::make('asset.name')
@@ -125,139 +125,46 @@ class Protection extends Screen
                             ->value(value: optional(value: $this->asset)->type)
                             ->readonly(),
 
-                        Input::make('asset.type')
-                            ->title('Asset Type')
-                            ->style('color: #43494f;')
-                            ->value(value: optional(value: $this->asset)->type)
-                            ->readonly(),
+                            Input::make('threat.name')
+                                ->title('Current Threat')
+                                ->style('color: #43494f;')
+                                ->value(optional($this->threat)->threat_name)
+                                ->readonly(),
                     ]),
+
+                    Group::make([
 
                     ModalToggle::make('Change Asset')
                         ->modal('assetModal')
                         ->method('changeAsset')
                         ->icon('bs.box-arrow-up-right'),
-                ]),
-            ]),
 
-            Layout::accordionClosed([
-
-                'Threat Information' =>  Layout::rows([
-                    Group::make([
-                        Input::make('threat.name')
-                                ->title('Current Threat')
-                                ->style('color: #43494f;')
-                                ->value(optional($this->threat)->threat_name)
-                                ->readonly(),
-    
-                        Input::make('threat.group')
-                            ->title('Threat Group')
-                            ->style('color: #43494f;')
-                            ->value(optional($this->threat)->threat_group)
-                            
-                            ->readonly(),
-                    ]),
                     ModalToggle::make(
-                        !$this->threat
-                            ? (!$this->asset ? __('Choose Asset and Threat') : __('Choose Threat'))
-                            : __('Change Threat')
-                    )->icon('bs.box-arrow-up-right')
-
-                    ->modal(!$this->threat && !$this->asset ? 'chooseAssetAndThreat' : 'chooseThreat')
-                    ->method(!$this->threat && !$this->asset ? 'changeAssetAndThreat' : 'changeThreat')
-                    ->open(!$this->threat),
-                ]),
-            ]),
-            Layout::accordionClosed([
-
-                'Risk Management and Safeguard Data' => Layout::rows([  
-                    Group::make([
-                        
+                            !$this->threat
+                                ? (!$this->asset ? __('Choose Asset and Threat') : __('Choose Threat'))
+                                : __('Change Threat')
+                        )->icon('bs.box-arrow-up-right')
     
-                        Input::make('vulnerability')
-                            ->title('Vulnerability Name')
-                            ->value(optional($this->rmsd ? $this->rmsd->first() : null)->vuln_name)
-                            ->readonly()
-                            ->style('color: #43494f;'),
+                        ->modal(!$this->threat && !$this->asset ? 'chooseAssetAndThreat' : 'chooseThreat')
+                        ->method(!$this->threat && !$this->asset ? 'changeAssetAndThreat' : 'changeThreat')
+                        ->open(!$this->threat),
 
-                        Input::make('safeguard_id')
-                            ->title('Safeguard ID')
-                            ->value(optional($this->rmsd ? $this->rmsd->first() : null)->safeguard_id)
-                            ->readonly()
-                            ->style('color: #43494f;'),
                     ]),
-    
-    
+
                     Group::make([
 
-                        Input::make('asset_value')
-                            ->title('Asset Value')
-                            ->value(optional($this->valuation ? $this->valuation->first() : null)->asset_value)
-                            ->readonly()
-                            ->style('color: #43494f;'),
+                        Label::make('risk_level')
+                        ->title('Risk Level: ')
+                        ->value(optional($this->rmsd?->first())->risk_level),
 
-
-                        Input::make('risk_level')
-                            ->title('Risk Level')
-                            ->value(optional($this->rmsd ? $this->rmsd->first() : null)->risk_level)
-                            ->readonly()
-                            ->style('color: #43494f;'),
-                            
+                        Label::make('current')
+                        ->title('Safeguard ID:')
+                        ->value(optional($this->rmsd?->first())->safeguard_id),
                     ]),
-    
-
-                ]),
-
-            
-            ]),
-
-
-            Layout::accordionShow([
-                'Protection Information' =>([
-                    Layout::rows([
-                        Group::make([
-
-                            Label::make('current')
-                                ->title('Current Protection Strategy:')
-                                ->value(optional($this->protection ? $this->protection->first() : null)->protection_strategy)
-                                ->canSee((bool) optional($this->protection ? $this->protection->first() : null)->protection_strategy),
-
-                            Label::make('current')
-                                ->title('Current Protection ID:')
-                                ->value(optional($this->protection ? $this->protection->first() : null)->protection_id)
-                                ->canSee((bool) optional($this->protection ? $this->protection->first() : null)->protection_id),
-                        ]),
-                    ])->canSee(
-                        (bool) (optional ($this->protection ? $this->protection->first() : null)->protection_type ||
-                        optional ($this->protection ? $this->protection->first() : null)->protection_strategy ||
-                        optional ($this->protection ? $this->protection->first() : null)->protection_id)
-                    ),
-
-                    ProtectionListener::class,
-                ]),
-
-                'Decision Information' => Layout::rows([ 
-                    Group::make([
-
-                        
-                        RadioButtons::make('decision')
-                        ->title('Decision')
-                        ->options([
-                            'Accept' => 'Accept',
-                            'Reduce' => 'Reduce',
-                            'Transfer' => 'Transfer',
-                            'Avoid' => 'Avoid',
-                        ])
-                        ->value(optional($this->protection ? $this->protection->first() : null)->decision)
-                        ->help('Determine the decision of the protection.'),
-                        ]),
-
-
-  
-
-
-
                 ]),
             ]),
+
+            ProtectionListener::class,
 
             Layout::modal(
                 'chooseThreat',

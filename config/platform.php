@@ -30,7 +30,7 @@ return [
      |
      */
 
-    'prefix' => env('PLATFORM_PREFIX', '/sims'),
+    'prefix' => env('PLATFORM_PREFIX', '/secura'),
 
     /*
      |--------------------------------------------------------------------------
@@ -48,6 +48,20 @@ return [
     'middleware' => [
         'public'  => ['web', 'cache.headers:private;must_revalidate;etag'],
         'private' => ['web', 'platform', 'cache.headers:private;must_revalidate;etag'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Global Search
+    |--------------------------------------------------------------------------
+    |
+    | The models registered here will be available for global search throughout
+    | the platform. Each model must implement the Searchable interface.
+    |
+    */
+
+    'search' => [
+        'App\Models\Management\AssetManagement',
     ],
 
     /*
@@ -166,24 +180,24 @@ return [
     ],
 
     /*
-     |--------------------------------------------------------------------------
-     | Default Attachment Configuration
-     |--------------------------------------------------------------------------
-     |
-     | This option allows you to specify the default settings for file attachments
-     | in your application. You can customize the disk and file generator used
-     | for attachments.
-     |
-     | The 'disk' option specifies the default filesystem disk where attachments
-     | will be stored. The default value is 'public', but you can also specify
-     | a different disk such as 's3' if you have configured one.
-     |
-     | The 'generator' option specifies the default file generator class that
-     | will be used to generate unique filenames for attachments. The default
-     | value is \Orchid\Attachment\Engines\Generator::class, but you can
-     | specify a different class if you have created your own custom generator.
-     |
-     */
+    |--------------------------------------------------------------------------
+    | Default Attachment Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to specify the default settings for file attachments
+    | in your application. You can customize the disk and file generator used
+    | for attachments.
+    |
+    | The 'disk' option specifies the default filesystem disk where attachments
+    | will be stored. The default value is 'public', but you can also specify
+    | a different disk such as 's3' if you have configured one.
+    |
+    | The 'generator' option specifies the default file generator class that
+    | will be used to generate unique filenames for attachments. The default
+    | value is \Orchid\Attachment\Engines\Generator::class, but you can
+    | specify a different class if you have created your own custom generator.
+    |
+    */
 
     'attachment' => [
         'disk'      => env('PLATFORM_FILESYSTEM_DISK', 'public'),
@@ -229,28 +243,6 @@ return [
 
     /*
      |--------------------------------------------------------------------------
-     | Search
-     |--------------------------------------------------------------------------
-     |
-     | This configuration option determines which models will be searchable in the
-     | sidebar search feature. To be searchable, a model must have a Presenter and
-     | a Scout class defined for it.
-     |
-     | Example:
-     |
-     | 'search' => [
-     |     \App\Models\User::class,
-     |     \App\Models\Post::class,
-     | ],
-     |
-     */
-
-    'search' => [
-        // \App\Models\User::class
-    ],
-
-    /*
-     |--------------------------------------------------------------------------
      | Hotwire Turbo
      |--------------------------------------------------------------------------
      |
@@ -262,7 +254,7 @@ return [
      */
 
     'turbo' => [
-        'cache'   => true,
+        'cache'   => false,
     ],
 
     /*

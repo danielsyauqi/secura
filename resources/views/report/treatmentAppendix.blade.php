@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -113,10 +114,15 @@
     
         <h3 style="text-align:left; font-size:16px; margin-left: 10px;">SULIT</h3>
         <div style="text-align: center; margin-top: 100px" class="main-page">
-            <img src="{{ public_path('/default-logo.png') }}" alt="Malaysian Nuclear Agency Logo" style="width: 250px; height: auto;">
-            <h1>Malaysian Nuclear Agency</h1>
-            <h2>Risk Treatment Plan Appendix </h2>
-            <p>Date: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
+            <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 250px; height: auto;">
+            @php
+            // Fetch the record from the database
+            $orgProfile = \App\Models\OrgProfile::find(1);
+        @endphp
+        
+        <h1 style="font-size: 15px;">{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
+            <h2 style="font-size: 15px;">Risk Treatment Plan Appendix (Scale 5)</h2>
+            <p style="font-size: 10px;">Date: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
         </div>
         
     
@@ -143,9 +149,14 @@
 
             <header>
                 <div class="header">
-                    <img src="{{ public_path('/default-logo.png') }}" alt="">
+                    <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="">
                     <div class="header-1">
-                        <h1>Malaysian Nuclear Agency</h1>
+                        @php
+            // Fetch the record from the database
+            $orgProfile = \App\Models\OrgProfile::find(1);
+        @endphp
+        
+        <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
                         <p>Risk Treatment Plan Appendix</p>
                     </div>
                 </div>
@@ -178,10 +189,17 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $counters = [];
+                @endphp
                 @foreach ($assetsByType as $index => $asset)
+                    @php
+                        $counters[$type] = $counters[$type] ?? 0;
+                        $counters[$type]++;
+                    @endphp
                     @if ($asset->threats && $asset->threats->count() > 0)
                     <tr>
-                        <td>{{ $loop->parent->iteration }}</td>
+                        <td>{{ $counters[$type] }}</td>
                         <td>{{ $asset->name ?? 'N/A' }}</td>
                         <td>{{ $asset->description ?? 'N/A' }}</td>
                         <td>{{ $asset->quantity ?? 'N/A' }}</td>
@@ -297,7 +315,7 @@
                             </tr>
                         @else
                         <tr>
-                            <td>{{ $loop->parent->iteration }}</td>
+                            <td>{{ $counters[$type] }}</td>
                             <td>{{ $asset->name ?? 'N/A' }}</td>
                             <td>{{ $asset->description ?? 'N/A' }}</td>
                             <td>{{ $asset->quantity ?? 'N/A' }}</td>

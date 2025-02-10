@@ -6,7 +6,6 @@ use Orchid\Screen\Screen;
 use Illuminate\Http\Request;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\Label;
 use App\Models\Assessment\Threat;
 use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Toast;
@@ -60,12 +59,6 @@ class RMSD extends Screen
             ];
         }
 
-        $scale_5 = json_decode(Valuation::where('asset_id', $id)->first()->scale_5 ?? '[]', true);
-        $this->asset_value_5 = $scale_5['asset_value'] ?? null;
-
-        $threat_scale_5 = json_decode(RMSDModel::where('threat_id', $threat_id)->first()->scale_5 ?? '[]', true);
-        $this->business_loss_5 = $threat_scale_5['business_loss'] ?? null;
-        $this->impact_level_5 = $threat_scale_5['impact_level'] ?? null;
 
         return [
             'rmsd' => RMSDModel::where('threat_id', $threat_id)->get(),
@@ -73,12 +66,19 @@ class RMSD extends Screen
             'asset' => $id ? AssetManagement::findOrFail($id) : new AssetManagement(),
             'assetID' => $id,
 
-            'asset_value_5' => $this->asset_value_5,
-            'business_loss_5' => $this->business_loss_5,
-            'impact_level_5' => $this->impact_level_5,
+            'asset_value_5' => optional(Valuation::where('asset_id', $id)->first())->asset_value_5 ?? null,
+            'business_loss_5' => optional(RMSDModel::where('threat_id', $threat_id)->first())->business_loss_5 ?? null,
+            'impact_level_5' => optional(RMSDModel::where('threat_id', $threat_id)->first())->impact_level_5 ?? null,
             'asset_value' => optional(Valuation::where('asset_id', $id)->first())->asset_value ?? null,
             'impact_level' => optional(RMSDModel::where('threat_id', $threat_id)->first())->impact_level ?? null,
             'business_loss' => optional(RMSDModel::where('threat_id', $threat_id)->first())->business_loss ?? null,
+
+            'vuln_group' => optional(RMSDModel::where('threat_id', $threat_id)->first())->vuln_group ?? null,
+            'vuln_name' => optional(RMSDModel::where('threat_id', $threat_id)->first())->vuln_name ?? null,
+            'safeguard_id' => optional(RMSDModel::where('threat_id', $threat_id)->first())->safeguard_id ?? null,
+            'safeguard_group' => optional(RMSDModel::where('threat_id', $threat_id)->first())->safeguard_group ?? null,
+
+
         ];
     }
 
@@ -108,50 +108,40 @@ class RMSD extends Screen
     public function layout(): array
     {
         return [
-            Layout::accordionShow([
+            Layout::accordion([
                 'Asset Information' => Layout::rows([
                     Group::make([
                         Input::make('asset.name')
                             ->title('Asset Name')
                             ->style('color: #43494f;')
-                            ->value(optional($this->asset)->type)
+                            ->value(value: optional(value: $this->asset)->type)
                             ->readonly(),
 
-                        Input::make('asset.type')
-                            ->title('Asset Type')
-                            ->style('color: #43494f;')
-                            ->value(optional($this->asset)->type)
-                            ->readonly(),
+                            Input::make('threat.name')
+                                ->title('Current Threat')
+                                ->style('color: #43494f;')
+                                ->value(optional($this->threat)->threat_name)
+                                ->readonly(),
                     ]),
+
+                    Group::make([
 
                     ModalToggle::make('Change Asset')
                         ->modal('assetModal')
                         ->method('changeAsset')
                         ->icon('bs.box-arrow-up-right'),
-                ]),
 
-                'Threat Information' => Layout::rows([
-                    Group::make([
-                        Input::make('threat.name')
-                            ->title('Current Threat')
-                            ->style('color: #43494f;')
-                            ->value(optional($this->threat)->threat_name)
-                            ->readonly(),
-
-                        Input::make('threat.group')
-                            ->title('Threat Group')
-                            ->style('color: #43494f;')
-                            ->value(optional($this->threat)->threat_group)
-                            ->readonly(),
-                    ]),
                     ModalToggle::make(
-                        !$this->threat
-                            ? (!$this->asset ? __('Choose Asset and Threat') : __('Choose Threat'))
-                            : __('Change Threat')
-                    )->icon('bs.box-arrow-up-right')
+                            !$this->threat
+                                ? (!$this->asset ? __('Choose Asset and Threat') : __('Choose Threat'))
+                                : __('Change Threat')
+                        )->icon('bs.box-arrow-up-right')
+    
                         ->modal(!$this->threat && !$this->asset ? 'chooseAssetAndThreat' : 'chooseThreat')
                         ->method(!$this->threat && !$this->asset ? 'changeAssetAndThreat' : 'changeThreat')
                         ->open(!$this->threat),
+
+                    ]),
                 ]),
             ]),
 
@@ -165,42 +155,10 @@ class RMSD extends Screen
 
             Layout::tabs([
                 'Vulnerable Form' => [
-                    Layout::rows([
-                        Group::make([
-                            Label::make('current')
-                                ->title('Current Vulnerable Group:')
-                                ->value(optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->vuln_group)
-                                ->canSee((bool)optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->vuln_group),
-
-                            Label::make('current')
-                                ->title('Current Vulnerable Details:')
-                                ->value(optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->vuln_name)
-                                ->canSee((bool)optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->vuln_name),
-                        ]),
-                    ])->canSee(
-                        (bool)optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->vuln_group &&
-                        optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->vuln_name
-                    ),
                     VulnerableListener::class,
                 ],
 
                 'Safeguards Form' => [
-                    Layout::rows([
-                        Group::make([
-                            Label::make('current')
-                                ->title('Current Safeguard Group:')
-                                ->value(optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->safeguard_group)
-                                ->canSee((bool)optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->safeguard_group),
-
-                            Label::make('current')
-                                ->title('Current Existing Safeguard:')
-                                ->value(optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->safeguard_id)
-                                ->canSee((bool)optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->safeguard_id),
-                        ]),
-                    ])->canSee(
-                        (bool)optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->safeguard_group &&
-                        optional($this->rmsd ? $this->rmsd->firstWhere('threat_id', $this->threat->id) : null)->safeguard_id
-                    ),
                     SafeguardListener::class,
                 ],
 
@@ -216,11 +174,6 @@ class RMSD extends Screen
         try {
             $flag = 0;
 
-            $json = json_encode([
-                'business_loss' => $request->input('business_loss_5'),
-                'impact_level' => $request->input('impact_level_5'),
-            ]);
-
             Log::info('Request data:', $request->all());
 
             RMSDModel::updateOrCreate(
@@ -233,7 +186,8 @@ class RMSD extends Screen
                     'likelihood' => $request->input('likelihood') ?? optional($this->rmsd->first())->likelihood,
                     'vuln_group' => $request->input('vuln_group') ?? optional($this->rmsd->first())->vuln_group,
                     'vuln_name' => $request->input('vuln_name') ?? optional($this->rmsd->first())->vuln_name,
-                    'scale_5' => $json ?? optional($this->rmsd->first())->scale_5,
+                    'impact_level_5' => $request->input('impact_level_5') ?? optional($this->rmsd->first())->impact_level_5,
+                    'business_loss_5' => $request->input('business_loss_5') ?? optional($this->rmsd->first())->business_loss_5,
                 ]
             );
 
@@ -244,11 +198,11 @@ class RMSD extends Screen
                 $flag=1;
             }
 
-            if ($request->input('business_loss_5') !== $this->business_loss_5 && $this->business_loss_5 !== null) {
+            if ($request->input('business_loss_5') !== optional($this->rmsd->first())->business_loss_5 && optional($this->rmsd->first()) !== null) {
                 RMSDModel::where('threat_id', $this->threat->id)
-                ->update(['scale_5' => ['risk_level' => null, 'likelihood' => null]]);
+                    ->update(['risk_level_5' => null, 'likelihood_5' => null]);
 
-                $flag=2;
+                $flag=1;
             }
 
             if ($flag === 1) {

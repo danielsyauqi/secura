@@ -37,8 +37,8 @@ class PrintReport extends Screen
 
     public function description(): string
     {
-        return 'The SIMS team is comprised of security, ICT, and business operations experts, ensuring that SIMS, aligned with ISO 27001 standards, produces accurate risk assessments for organizational assets. 
-        Each member brings specialized knowledge to manage security and operational risks effectively, allowing SIMS to support comprehensive risk mitigation strategies while meeting ISO 27001 compliance.';
+        return 'The SecuRA team is comprised of security, ICT, and business operations experts, ensuring that SecuRA, aligned with ISO 27001 standards, produces accurate risk assessments for organizational assets. 
+        Each member brings specialized knowledge to manage security and operational risks effectively, allowing SecuRA to support comprehensive risk mitigation strategies while meeting ISO 27001 compliance.';
     }
 
     public function commandBar(): iterable
@@ -54,7 +54,7 @@ class PrintReport extends Screen
             Layout::rows([
                 Label::make('Detail Risk Assessment Report')
                 ->title('Detail Risk Assessment Report')
-                ->help("The Detailed Risk Assessment Report evaluates the risks associated with various assets within the Malaysian Nuclear Agency, categorizing them by type and detailing key information such as asset identification, ownership, location, and valuation. 
+                ->help("The Detailed Risk Assessment Report evaluates the risks associated with various assets within the your organization, categorizing them by type and detailing key information such as asset identification, ownership, location, and valuation. 
                 It assesses each asset's vulnerabilities and potential threats, along with the safeguards in place to mitigate those risks. The report further evaluates the business impact, including the likelihood and severity of risks, and determines the overall risk level for each asset based on its confidentiality, integrity, availability, and dependencies. The goal is to provide a comprehensive view of asset security and risk management, ensuring informed decision-making for risk treatment and safeguarding measures."),
 
                 Group::make([

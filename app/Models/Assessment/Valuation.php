@@ -26,6 +26,10 @@ class Valuation extends Model
         'availability',
         'asset_value',
         'scale_5',
+        'confidential_5',
+        'integrity_5',
+        'availability_5',
+        'asset_value_5',
     ];
 
     public function asset()

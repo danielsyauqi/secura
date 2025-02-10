@@ -20,16 +20,26 @@ class Protection extends Model
 
     
     protected $fillable = [
+        'id',
         'threat_id',
         'protection_strategy',
-        'decision',
-        'protection_id'
-
-
+        'protection_id',
+        'decision'
     ];
 
     public function threat()
     {
-        return $this->belongsTo(Threat::class, 'threat_id');
+        return $this->belongsTo(Threat::class, 'threat_id', 'id');
+    }
+
+    public function rmsd()
+    {
+        return $this->belongsTo(RMSD::class, 'threat_id', 'threat_id');
+    }
+
+    public function asset()
+    {
+        return $this->belongsTo(AssetManagement::class, 'threat_id', 'id')
+            ->through('threat');
     }
 }

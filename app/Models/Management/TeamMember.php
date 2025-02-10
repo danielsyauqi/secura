@@ -19,7 +19,7 @@ class TeamMember extends Model
     
     protected $fillable = [
         'user_id',
-        'sims_id',
+        'secura_id',
         'job_function',
         'sector',
         'ra_function',

@@ -132,9 +132,14 @@
 
 
         <div style="text-align: center; margin-top: 200px">
-            <img src="{{ public_path('/default-logo.png') }}" alt="Malaysian Nuclear Agency Logo" style="width: 250px; height: auto;">
-            <h1>Malaysian Nuclear Agency</h1>
-            <h2>Summary Report Appendix</h2>
+            <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 250px; height: auto;">
+            @php
+            // Fetch the record from the database
+            $orgProfile = \App\Models\OrgProfile::find(1);
+        @endphp
+        
+        <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
+        <h2>Summary Report Appendix</h2>
             <p>Date: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
         </div>
 
@@ -143,10 +148,15 @@
     <!-- header -->
     <header>
         <div class="header">
-            <img src="{{ public_path('/default-logo.png') }}" alt="">
+            <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 50px; height: auto;>
             <div class="header-1">
-                <h1>Malaysian Nuclear Agency</h1>
-                <p>Summary Report Appendix</p>
+                @php
+                // Fetch the record from the database
+                $orgProfile = \App\Models\OrgProfile::find(1);
+            @endphp
+            
+            <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
+            <p>Summary Report Appendix</p>
             </div>
         </div>
     <hr>
@@ -219,14 +229,25 @@
                 @endphp
 
 
-                 @foreach($assets as $asset)
-                    <tr>
-                        <td>{{ $asset->type }}</td>
-                        <td>{{ $asset->Low }}</td>
-                        <td>{{ $asset->Medium }}</td>
-                        <td>{{ $asset->High }}</td>
-                        <td>{{ $asset->Low + $asset->Medium + $asset->High}} / {{ $asset->count }}</td>
-                    </tr>
+                 @php
+                    $assetsByType = $assets->groupBy('type');
+                    $counters = [];
+                @endphp
+
+                @foreach ($assetsByType as $type => $typeAssets)
+                    @php $counters[$type] = 0; @endphp
+                    @foreach ($typeAssets as $asset)
+                        @php
+                            $counters[$type]++;
+                        @endphp
+                        <tr>
+                            <td>{{ $asset->type }}</td>
+                            <td>{{ $asset->Low }}</td>
+                            <td>{{ $asset->Medium }}</td>
+                            <td>{{ $asset->High }}</td>
+                            <td>{{ $asset->Low + $asset->Medium + $asset->High}} / {{ $asset->count }}</td>
+                        </tr>
+                    @endforeach
                 @endforeach
 
 
@@ -651,5 +672,3 @@
     </div>
 </body>
 </html>
-
-

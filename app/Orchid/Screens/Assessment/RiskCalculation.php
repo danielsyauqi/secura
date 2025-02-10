@@ -69,10 +69,9 @@ class RiskCalculation extends Screen
 
         } else{
 
-            $threat_scale_5 = json_decode(RMSDModel::where('threat_id', $threat_id)->first()->scale_5 ?? '[]', true);
-            $this->impact_level_5 = $threat_scale_5['impact_level'] ?? null;
-            $this->likelihood_5 = $threat_scale_5['likelihood'] ?? null;
-            $this->risk_level_5 = $threat_scale_5['risk_level'] ?? null;
+            $this->impact_level_5 = RMSDModel::where('threat_id', $threat_id)->first()->impact_level_5 ?? null;
+            $this->likelihood_5 = RMSDModel::where('threat_id', $threat_id)->first()->likelihood_5 ?? null;
+            $this->risk_level_5 = RMSDModel::where('threat_id', $threat_id)->first()->risk_level_5 ?? null;
 
 
 
@@ -130,7 +129,7 @@ class RiskCalculation extends Screen
 
         /** @var TYPE_NAME $this */
         return [
-            Layout::accordionShow([
+            Layout::accordion([
                 'Asset Information' => Layout::rows([
                     Group::make([
                         Input::make('asset.name')
@@ -139,68 +138,37 @@ class RiskCalculation extends Screen
                             ->value(value: optional(value: $this->asset)->type)
                             ->readonly(),
 
-                        Input::make('asset.type')
-                            ->title('Asset Type')
-                            ->style('color: #43494f;')
-                            ->value(value: optional(value: $this->asset)->type)
-                            ->readonly(),
+                            Input::make('threat.name')
+                                ->title('Current Threat')
+                                ->style('color: #43494f;')
+                                ->value(optional($this->threat)->threat_name)
+                                ->readonly(),
                     ]),
+
+                    Group::make([
 
                     ModalToggle::make('Change Asset')
                         ->modal('assetModal')
                         ->method('changeAsset')
                         ->icon('bs.box-arrow-up-right'),
-                ]),
 
-                'Threat Information' =>  Layout::rows([
-                    Group::make([
-                        Input::make('threat.name')
-                                ->title('Current Threat')
-                                ->style('color: #43494f;')
-                                ->value(optional($this->threat)->threat_name)
-                                ->readonly(),
-    
-                        Input::make('threat.group')
-                            ->title('Threat Group')
-                            ->style('color: #43494f;')
-                            ->value(optional($this->threat)->threat_group)
-                            ->readonly(),
-                    ]),
                     ModalToggle::make(
-                        !$this->threat
-                            ? (!$this->asset ? __('Choose Asset and Threat') : __('Choose Threat'))
-                            : __('Change Threat')
-                    )->icon('bs.box-arrow-up-right')
+                            !$this->threat
+                                ? (!$this->asset ? __('Choose Asset and Threat') : __('Choose Threat'))
+                                : __('Change Threat')
+                        )->icon('bs.box-arrow-up-right')
+    
+                        ->modal(!$this->threat && !$this->asset ? 'chooseAssetAndThreat' : 'chooseThreat')
+                        ->method(!$this->threat && !$this->asset ? 'changeAssetAndThreat' : 'changeThreat')
+                        ->open(!$this->threat),
 
-                    ->modal(!$this->threat && !$this->asset ? 'chooseAssetAndThreat' : 'chooseThreat')
-                    ->method(!$this->threat && !$this->asset ? 'changeAssetAndThreat' : 'changeThreat')
-                    ->open(!$this->threat),
+                    ]),
                 ]),
-
-
             ]),
-
-            Layout::modal('assetModal', AssetSelectionListener::class, )->title('Change Asset'),
-
-            Layout::modal(
-                'chooseThreat',
-                AllSelectionListener::class
-            )->title(
-                !$this->threat
-                    ? (!$this->asset 
-                        ? __('Choose Asset and Threat') // Both threat and asset are missing
-                        : __('Choose Threat')) // Only threat is missing
-                    : __('Change Threat') // Threat exists
-            ),
 
            
 
             RiskCalculationListener::class,
-
-
-
-
-
 
 
         ];
@@ -219,14 +187,11 @@ class RiskCalculation extends Screen
                     'likelihood' => $request->input('likelihood') ?? $this->rmsd->first()->likelihood ?? null,
                     'risk_level' => $request->input('risk_level') ?? $this->rmsd->first()->risk_level ?? null,
                     'risk_owner' => $request->input('risk_owner') ?? $this->rmsd->first()->risk_owner ?? null,
+                    'likelihood_5' => $request->input('likelihood_5') ?? $this->rmsd->first()->likelihood_5 ?? null,
+                    'risk_level_5' => $request->input('risk_level_5') ?? $this->rmsd->first()->risk_level_5 ?? null,
                 ]
             );
 
-            $scale_5 = json_decode($rmsd->scale_5 ?? '[]', true);
-            $scale_5['likelihood'] = $request->input('likelihood_5') ?? $this->likelihood_5 ?? $scale_5['likelihood'] ?? null;
-            $scale_5['risk_level'] = $request->input('risk_level_5') ?? $this->risk_level_5 ?? $scale_5['risk_level'] ?? null;
-
-            $rmsd->update(['scale_5' => json_encode($scale_5)]);
 
 
 

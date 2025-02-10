@@ -142,9 +142,14 @@
 <body>
         <h3 style="text-align:left; font-size:16px; margin-left: 10px;">SULIT</h3>
         <div style="text-align: center; margin-top: 100px">
-            <img src="{{ public_path('/default-logo.png') }}" alt="Malaysian Nuclear Agency Logo" style="width: 250px; height: auto;">
-            <h1>Malaysian Nuclear Agency</h1>
-            <h2>Detail Risk Assessment</h2>
+            <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 250px; height: auto;">
+            @php
+            // Fetch the record from the database
+            $orgProfile = \App\Models\OrgProfile::find(1);
+        @endphp
+        
+        <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
+        <h2>Detail Risk Assessment</h2>
             <p>Date: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
         </div>
 
@@ -167,10 +172,15 @@
 
 <header>
     <div class="header">
-        <img src="{{ public_path('/default-logo.png') }}" alt="">
+        <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 50px; height: auto;">
         <div class="header-1">
-            <h1>Malaysian Nuclear Agency</h1>
-            <p>Detail Risk Assessment Report (Scale 5)</p>
+            @php
+            // Fetch the record from the database
+            $orgProfile = \App\Models\OrgProfile::find(1);
+        @endphp
+        
+        <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
+        <p>Detail Risk Assessment Report</p>
         </div>
     </div>
 </header>
@@ -204,11 +214,20 @@
         </tr>
     </thead>
     <tbody>
+        @php
+            $counters = [];
+        @endphp
+
         @foreach ($assetsByType as $index => $asset)
-                @if ($asset->threats && $asset->threats->count() > 0)
+            @php
+                $counters[$type] = $counters[$type] ?? 0;
+                $counters[$type]++;
+            @endphp
+
+            @if ($asset->threats && $asset->threats->count() > 0)
                 <tr>
                     <!-- Common asset data, displayed only once for each asset -->
-                    <td>{{ $loop->parent->iteration }}</td>
+                    <td>{{ $counters[$type] }}</td>
                     <td>{{ $asset->name ?? 'N/A' }}</td>
                     <td>{{ $asset->quantity ?? 'N/A' }}</td>
                     <td>{{ $asset->owner ?? 'N/A' }}</td>
@@ -306,19 +325,19 @@
                 @else
                 <tr>
                     <!-- Single threat (if no threats are found) -->
-                    <td>{{ $loop->parent->iteration }}</td>
+                    <td>{{ $counters[$type] }}</td>
                     <td>{{ $asset->name ?? 'N/A' }}</td>
                     <td>{{ $asset->quantity ?? 'N/A' }}</td>
                     <td>{{ $asset->owner ?? 'N/A' }}</td>
                     <td>{{ $asset->custodian ?? 'N/A' }}</td>
                     <td>{{ $asset->location ?? 'N/A' }}</td>
                     <td>{{ $asset->description ?? 'N/A' }}</td>
-                    <td>{{ $scale_5_valuation['confidential'] ?? 'N/A' }}</td>
-                    <td>{{ $scale_5_valuation['integrity'] ?? 'N/A' }}</td>
-                    <td>{{ $scale_5_valuation['availability'] ?? 'N/A' }}</td>
+                    <td>{{ $asset->valuation->confidential_5 ?? 'N/A' }}</td>
+                    <td>{{ $asset->valuation->integrity_5 ?? 'N/A' }}</td>
+                    <td>{{ $asset->valuation->availability_5 ?? 'N/A' }}</td>
                     <td>{{ $asset->valuation->depend_on ?? 'N/A' }}</td>
                     <td>{{ $asset->valuation->depended_asset ?? 'N/A' }}</td>
-                    <td>{{ $scale_5_valuation['asset_value'] ?? 'N/A' }}</td>
+                    <td>{{ $asset->valuation->asset_value_5 ?? 'N/A' }}</td>
 
                     @php
                     $threat = $asset->threats->first();
@@ -328,10 +347,10 @@
                     <td>{{ $threat->threat_name ?? 'N/A' }}</td>
                     <td>{{ $rmsd->vuln_name ?? 'N/A' }}</td>
                     <td>{{ $rmsd->safeguard_id ?? 'N/A' }}</td>
-                    <td>{{ $scale_5_rmsd['business_loss'] ?? 'N/A' }}</td>
-                    <td>{{ $scale_5_rmsd['impact_level'] ?? 'N/A' }}</td>
-                    <td>{{ $scale_5_rmsd['likelihood'] ?? 'N/A' }}</td>
-                    <td>{{ $scale_5_rmsd['risk_level'] ?? 'N/A' }}</td>
+                    <td>{{ $rmsd->business_loss_5?? 'N/A' }}</td>
+                    <td>{{ $rmsd->impact_level_5?? 'N/A' }}</td>
+                    <td>{{ $rmsd->likelihood_5 ?? 'N/A' }}</td>
+                    <td>{{ $rmsd->risk_level_5 ?? 'N/A' }}</td>
                 </tr>
             @endif
         @endforeach

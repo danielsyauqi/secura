@@ -29,7 +29,10 @@ class RMSD extends Model
         'vuln_name',
         'likelihood',
         'scale_5',
-
+        'business_loss_5',
+        'impact_level_5',
+        'likelihood_5',
+        'risk_level_5',
     ];
 
     public function threat()

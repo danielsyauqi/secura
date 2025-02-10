@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Assessment\Protection;
 use App\Models\Management\TeamMember;
 use Orchid\Screen\Actions\ModalToggle;
-use App\Models\Management\SimsManagement;
+use App\Models\Management\SecuraManagement;
 use App\Models\Management\AssetManagement;
 use App\Orchid\Layouts\Dashboard\TreatmentChart;
 use App\Orchid\Layouts\Dashboard\AssetTypeChart;
@@ -31,7 +31,7 @@ class PlatformScreen extends Screen
     public $asset;
     public $threat;
     public $rmsd;
-    public $sims;
+    public $secura;
     public $team;
     public $protection;
     public $treatment;
@@ -51,7 +51,7 @@ class PlatformScreen extends Screen
         $this->user = Auth::user();
 
         $this->asset = AssetManagement::all();
-        $this->sims = SimsManagement::all();
+        $this->secura = SecuraManagement::all();
         $this->team = TeamMember::all();
 
         $this->valuation = Valuation::all();       
@@ -126,14 +126,14 @@ class PlatformScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'SIMS Risk Assessment Platform';
+        return 'Secured Risk Assessment';
     }
 
     /**
      * Display header description.
      */
     public function description(): ?string{
-        return 'Welcome to the SIMS Risk Assessment Platform. This platform is designed to help you assess the risk of your organization. ' ;
+        return 'Welcome to the SecuRA Platform. This platform is designed to help you assess the risk of your organization. ' ;
     }
 
     /**

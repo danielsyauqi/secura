@@ -8,11 +8,11 @@ use Orchid\Attachment\Attachable;
 use Orchid\Screen\AsSource;
 
 
-class SimsManagement extends Model
+class SecuraManagement extends Model
 {
     use HasFactory, AsSource,Attachable;
     public $timestamps = false;
-    protected $table = 'sims_management';
+    protected $table = 'secura_management';
 
     protected $primaryKey = 'id';
 

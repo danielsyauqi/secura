@@ -114,23 +114,6 @@ class Threat extends Screen
             
             Layout::modal('chooseAsset', AssetSelectionListener::class,)->title(!$this->asset ? __('Choose Asset') : __('Change Asset')),
 
-            Layout::rows([
-                Group::make([
-                    Label::make('current')
-                        ->title('Current Threat Group:')
-                        ->value(optional($this->threat ? $this->threat: null)->threat_group)
-                        ->canSee((bool) optional($this->threat ? $this->threat: null)->threat_group),
-
-                    Label::make('current')
-                        ->title('Current Threat Name:')
-                        ->value(optional($this->threat ? $this->threat: null)->threat_name)
-                        ->canSee((bool) optional($this->threat ? $this->threat: null)->threat_name),
-                ]),
-            ])->canSee(
-                (bool) (optional($this->threat ? $this->threat: null)->threat_group &&
-                optional($this->threat ? $this->threat: null)->threat_name
-            )),
-
             // Add threat fields with empty default values
             ThreatListener::class,
 

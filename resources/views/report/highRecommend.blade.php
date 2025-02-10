@@ -115,8 +115,13 @@
 
 
         <div style="text-align: center; margin-top: 100px">
-            <img src="{{ public_path('/default-logo.png') }}" alt="Malaysian Nuclear Agency Logo" style="width: 250px; height: auto;">
-            <h1>Malaysian Nuclear Agency</h1>
+            <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 250px; height: auto;">
+            @php
+            // Fetch the record from the database
+            $orgProfile = \App\Models\OrgProfile::find(1);
+        @endphp
+        
+        <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
             <h2>High Level Recommendation Summary Report</h2>
             <p>Date: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
         </div>
@@ -126,9 +131,14 @@
 
     <header>
         <div class="header">
-            <img src="{{ public_path('/default-logo.png') }}" alt="">
+            <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 50px; height: auto;>
             <div class="header-1">
-                <h1>Malaysian Nuclear Agency</h1>
+                @php
+            // Fetch the record from the database
+            $orgProfile = \App\Models\OrgProfile::find(1);
+        @endphp
+        
+        <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
                 <p>High Level Recommendation Summary Report</p>
             </div>
         </div>

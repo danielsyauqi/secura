@@ -132,8 +132,13 @@
 
 
         <div style="text-align: center; margin-top: 200px">
-            <img src="{{ public_path('/default-logo.png') }}" alt="Malaysian Nuclear Agency Logo" style="width: 250px; height: auto;">
-            <h1>Malaysian Nuclear Agency</h1>
+            <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 250px; height: auto;">
+            @php
+            // Fetch the record from the database
+            $orgProfile = \App\Models\OrgProfile::find(1);
+        @endphp
+        
+        <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
             <h2>Summary Report Appendix (Scale 5)</h2>
             <p>Date: {{ \Carbon\Carbon::now()->format('d-m-Y') }}</p>
         </div>
@@ -143,9 +148,14 @@
     <!-- header -->
     <header>
         <div class="header">
-            <img src="{{ public_path('/default-logo.png') }}" alt="">
+            <img src="{{ file_exists(public_path('/favicon.ico')) ? public_path('/favicon.ico') : public_path('/default-logo.png') }}" alt="" style="width: 50px; height: auto;>
             <div class="header-1">
-                <h1>Malaysian Nuclear Agency</h1>
+                @php
+            // Fetch the record from the database
+            $orgProfile = \App\Models\OrgProfile::find(1);
+        @endphp
+        
+        <h1>{{ $orgProfile ? $orgProfile->name : 'No Name Found' }}</h1>
                 <p>Summary Report Appendix (Scale 5)</p>
             </div>
         </div>
@@ -189,11 +199,11 @@
                     ->select(
                         'asset_management.type',
                         // Correctly extracting values from the scale_5 JSON column, focusing on the asset_value key
-                        DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_valuation.scale_5, "$.asset_value") = "Low" THEN 1 ELSE 0 END) as Low'),
-                        DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_valuation.scale_5, "$.asset_value") = "Medium" THEN 1 ELSE 0 END) as Medium'),
-                        DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_valuation.scale_5, "$.asset_value") = "High" THEN 1 ELSE 0 END) as High'),
-                        DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_valuation.scale_5, "$.asset_value") = "Very Low" THEN 1 ELSE 0 END) as VeryLow'),
-                        DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_valuation.scale_5, "$.asset_value") = "Very High" THEN 1 ELSE 0 END) as VeryHigh'),
+                        DB::raw('SUM(CASE WHEN asset_valuation.asset_value_5 = "Low" THEN 1 ELSE 0 END) as Low'),
+                        DB::raw('SUM(CASE WHEN asset_valuation.asset_value_5 = "Medium" THEN 1 ELSE 0 END) as Medium'),
+                        DB::raw('SUM(CASE WHEN asset_valuation.asset_value_5 = "High" THEN 1 ELSE 0 END) as High'),
+                        DB::raw('SUM(CASE WHEN asset_valuation.asset_value_5 = "Very Low" THEN 1 ELSE 0 END) as VeryLow'),
+                        DB::raw('SUM(CASE WHEN asset_valuation.asset_value_5 = "Very High" THEN 1 ELSE 0 END) as VeryHigh'),
                         DB::raw('COUNT(*) as count')
                     )
                     ->whereIn('asset_management.type', [
@@ -231,16 +241,27 @@
             
 
 
-                 @foreach($assets as $asset)
-                    <tr>
-                        <td>{{ $asset->type }}</td>
-                        <td>{{ $asset->VeryLow }}</td>
-                        <td>{{ $asset->Low }}</td>
-                        <td>{{ $asset->Medium }}</td>
-                        <td>{{ $asset->High }}</td>
-                        <td>{{ $asset->VeryHigh }}</td>
-                        <td>{{ $asset->VeryLow + $asset->Low + $asset->Medium + $asset->High + $asset->VeryHigh}} / {{ $asset->count }}</td>
-                    </tr>
+                 @php
+                    $assetsByType = $assets->groupBy('type');
+                    $counters = [];
+                @endphp
+
+                @foreach ($assetsByType as $type => $typeAssets)
+                    @php $counters[$type] = 0; @endphp
+                    @foreach ($typeAssets as $asset)
+                        @php
+                            $counters[$type]++;
+                        @endphp
+                        <tr>
+                            <td>{{ $counters[$type] }}</td>
+                            <td>{{ $asset->VeryLow }}</td>
+                            <td>{{ $asset->Low }}</td>
+                            <td>{{ $asset->Medium }}</td>
+                            <td>{{ $asset->High }}</td>
+                            <td>{{ $asset->VeryHigh }}</td>
+                            <td>{{ $asset->VeryLow + $asset->Low + $asset->Medium + $asset->High + $asset->VeryHigh}} / {{ $asset->count }}</td>
+                        </tr>
+                    @endforeach
                 @endforeach
 
 
@@ -524,11 +545,11 @@
                             ->join('asset_rmsd', 'asset_threat.id', '=', 'asset_rmsd.threat_id') // Join with asset_rmsd
                             ->select('asset_management.type',
                                 // Extracting values from the scale_5 JSON column
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.impact_level") = "Low" THEN 1 ELSE 0 END) as Low'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.impact_level") = "Medium" THEN 1 ELSE 0 END) as Medium'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.impact_level") = "High" THEN 1 ELSE 0 END) as High'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.impact_level") = "Very Low" THEN 1 ELSE 0 END) as VeryLow'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.impact_level") = "Very High" THEN 1 ELSE 0 END) as VeryHigh'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.impact_level_5 = "Low" THEN 1 ELSE 0 END) as Low'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.impact_level_5 = "Medium" THEN 1 ELSE 0 END) as Medium'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.impact_level_5 = "High" THEN 1 ELSE 0 END) as High'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.impact_level_5 = "Very Low" THEN 1 ELSE 0 END) as VeryLow'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.impact_level_5 = "Very High" THEN 1 ELSE 0 END) as VeryHigh'),
                                 DB::raw('COUNT(*) as count')
                             )
                             ->whereIn('asset_management.type', $customOrder) // Fetch only specified types
@@ -560,9 +581,19 @@
 
 
 
-                     @foreach($impactLevels as $impactLevel)
+                     @php
+                    $impactLevelsByType = $impactLevels->groupBy('type');
+                    $counters = [];
+                @endphp
+
+                @foreach ($impactLevelsByType as $type => $typeAssets)
+                    @php $counters[$type] = 0; @endphp
+                    @foreach ($typeAssets as $impactLevel)
+                        @php
+                            $counters[$type]++;
+                        @endphp
                         <tr>
-                            <td>{{ $impactLevel->type }}</td>
+                            <td>{{ $counters[$type] }}</td>
                             <td>{{ $impactLevel->VeryLow ?? 0 }}</td>
                             <td>{{ $impactLevel->Low ?? 0 }}</td>
                             <td>{{ $impactLevel->Medium ?? 0 }}</td>
@@ -570,10 +601,9 @@
                             <td>{{ $impactLevel->VeryHigh ?? 0 }}</td>
 
                         </tr>
-
-
                     @endforeach
-        
+                @endforeach
+
 
                 <tr class="total">
                     <td>Total</td>
@@ -626,11 +656,11 @@
                             ->join('asset_rmsd', 'asset_threat.id', '=', 'asset_rmsd.threat_id') // Join with asset_rmsd
                             ->select('asset_management.type',
                                 // Extracting values from the scale_5 JSON column
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "Low" THEN 1 ELSE 0 END) as Low'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "Medium" THEN 1 ELSE 0 END) as Medium'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "High" THEN 1 ELSE 0 END) as High'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "Very Low" THEN 1 ELSE 0 END) as VeryLow'),
-                                DB::raw('SUM(CASE WHEN JSON_EXTRACT(asset_rmsd.scale_5, "$.risk_level") = "Very High" THEN 1 ELSE 0 END) as VeryHigh'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "Low" THEN 1 ELSE 0 END) as Low'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "Medium" THEN 1 ELSE 0 END) as Medium'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "High" THEN 1 ELSE 0 END) as High'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "Very Low" THEN 1 ELSE 0 END) as VeryLow'),
+                                DB::raw('SUM(CASE WHEN asset_rmsd.risk_level_5 = "Very High" THEN 1 ELSE 0 END) as VeryHigh'),
                                 DB::raw('COUNT(*) as count')
                             )
                             ->whereIn('asset_management.type', $customOrder) // Fetch only specified types
@@ -662,9 +692,19 @@
 
 
 
-                     @foreach($riskLevels as $riskLevel)
+                     @php
+                    $riskLevelsByType = $riskLevels->groupBy('type');
+                    $counters = [];
+                @endphp
+
+                @foreach ($riskLevelsByType as $type => $typeAssets)
+                    @php $counters[$type] = 0; @endphp
+                    @foreach ($typeAssets as $riskLevel)
+                        @php
+                            $counters[$type]++;
+                        @endphp
                         <tr>
-                            <td>{{ $riskLevel->type }}</td>
+                            <td>{{ $counters[$type] }}</td>
                             <td>{{ $riskLevel->VeryLow ?? 0 }}</td>
                             <td>{{ $riskLevel->Low ?? 0 }}</td>
                             <td>{{ $riskLevel->Medium ?? 0 }}</td>
@@ -672,10 +712,9 @@
                             <td>{{ $riskLevel->VeryHigh ?? 0 }}</td>
 
                         </tr>
-
-
                     @endforeach
-        
+                @endforeach
+
 
                 <tr class="total">
                     <td>Total</td>
@@ -697,5 +736,3 @@
     </div>
 </body>
 </html>
-
-

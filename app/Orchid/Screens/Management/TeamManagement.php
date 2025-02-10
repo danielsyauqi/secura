@@ -42,8 +42,8 @@ class TeamManagement extends Screen
 
     public function description(): string
     {
-        return 'The SIMS team is comprised of security, ICT, and business operations experts, ensuring that SIMS, aligned with ISO 27001 standards, produces accurate risk assessments for organizational assets. 
-        Each member brings specialized knowledge to manage security and operational risks effectively, allowing SIMS to support comprehensive risk mitigation strategies while meeting ISO 27001 compliance.';
+        return 'The SecuRA team is comprised of security, ICT, and business operations experts, ensuring that SecuRA, aligned with ISO 27001 standards, produces accurate risk assessments for organizational assets. 
+        Each member brings specialized knowledge to manage security and operational risks effectively, allowing SecuRA to support comprehensive risk mitigation strategies while meeting ISO 27001 compliance.';
     }
 
     public function commandBar(): iterable
@@ -101,7 +101,7 @@ class TeamManagement extends Screen
 
             TeamMember::create([
                 'user_id' => $request->input('selected_user_id'),
-                'sims_id' => 1,
+                'secura_id' => 1,
                 'job_function' => $request->input('job_function'),
                 'sector' => $request->input('sector'),
                 'ra_function' => $request->input('ra_function'),
