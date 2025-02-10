@@ -1,7 +1,13 @@
 # SECURA - Risk Assessment System
 
+![Logo](public/default-logo.png)
+
 ## About
-SECURA is a modern web-based risk assessment system built with Laravel and the Orchid Platform. It provides comprehensive tools for tracking, managing, and securing organizational assets.
+SecuRA (Secured Risk Assessment) is a cutting-edge, web-based platform designed to replace outdated and inefficient risk management systems. With a focus on automation, security, and ease of use, SecuRA revolutionizes the way organizations track assets, assess risks, and generate audit reports. By moving away from manual processes like Excel, SecuRA offers a streamlined solution that enhances efficiency and minimizes human error.
+
+Built on the robust Laravel framework and utilizing the Orchid Laravel template, SecuRA provides an intuitive admin panel, real-time dynamic features via AJAX, and seamless integration for asset management, risk assessment, and automated report generation in PDF format. The platform includes powerful tools for asset tracking, threat identification, asset valuation, and bulk editing of risk assessments. With role-based access control, SecuRA ensures secure handling of sensitive data.
+
+SecuRA integrates advanced search capabilities using Laravel Scout and meets the highest cybersecurity standards, making it an ideal choice for businesses looking to modernize their risk management processes and ensure compliance. It offers a scalable, secure, and efficient solution for managing and mitigating risks in a rapidly changing environment.
 
 ## Features
 - Risk assessment and asset management
