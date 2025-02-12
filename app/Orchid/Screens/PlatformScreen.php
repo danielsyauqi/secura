@@ -22,6 +22,7 @@ use App\Models\Management\AssetManagement;
 use App\Orchid\Layouts\Dashboard\TreatmentChart;
 use App\Orchid\Layouts\Dashboard\AssetTypeChart;
 use App\Orchid\Layouts\Dashboard\RiskLevelChart;
+use App\Orchid\Layouts\CustomMetricLayout;
 use Orchid\Screen\Actions\Button;
 
 class PlatformScreen extends Screen
@@ -177,7 +178,8 @@ class PlatformScreen extends Screen
                 
             ]),
 
-            Layout::metrics2([
+            
+            new CustomMetricLayout([
                 'Asset Registered' => 'metrics.assets',
                 'Current Threats' => 'metrics.threat',
                 'Uncompleted RA' => 'metrics.RA',

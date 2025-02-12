@@ -1,16 +1,28 @@
 <style>
-    .image {
-        position: absolute;
-        font-size: 50px; /* Set the font-size for large icon */
-        top: 10px; /* Adjust top position to not overflow */
-        right: 10px; /* Align icon to the right */
-        color: #333; /* Change icon color */
-        opacity: 0.1; /* Set opacity */
-    }
-
     .metric-container {
-        position: relative; /* Make the container the reference for positioning */
-        overflow: hidden; /* Prevent the icon from overflowing outside the box */
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .metric-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #333;
+        opacity: 0.1;
+    }
+    
+    .metric-value {
+        font-size: 1.75rem;
+        font-weight: 300;
+        line-height: 1.2;
+        color: #000;
+    }
+    
+    .metric-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-bottom: 0.25rem;
     }
 </style>
 
@@ -24,27 +36,50 @@
     @endisset
 
     @php
-        $colors = ['eaf4ff','ffffea','ffeaea','eaffea'];  // Array of colors
-        $icons = ['bi-archive-fill', 'bi-shield-fill-exclamation', 'bi-file-earmark-ruled-fill', 'bi-person-fill'];  // Array of Bootstrap icons
-        $index = 0;
+        $metricClasses = [
+            'Asset Registered' => [
+                'bg-color' => 'eaf4ff',
+                'icon' => 'bi-archive-fill',
+                'font-size' => '30px'
+            ],
+            'Current Threats' => [
+                'bg-color' => 'ffffea',
+                'icon' => 'bi-shield-fill-exclamation',
+                'font-size' => '40px'
+            ],
+            'Uncompleted RA' => [
+                'bg-color' => 'ffeaea',
+                'icon' => 'bi-file-earmark-ruled-fill',
+                'font-size' => '35px'
+            ],
+            'Total Team Members' => [
+                'bg-color' => 'eaffea',
+                'icon' => 'bi-person-fill',
+                'font-size' => '45px'
+            ]
+        ];
     @endphp
 
     <div class="row mb-2 g-3 g-mb-4">
         @foreach($metrics as $key => $metric)
+            @php
+                $config = $metricClasses[$key] ?? [
+                    'bg-color' => 'ffffff',
+                    'icon' => 'bi-graph-up',
+                    'font-size' => '35px'
+                ];
+            @endphp
             <div class="col">
-                <div class="p-4 rounded shadow-sm h-100 d-flex flex-column metric-container" style="background-color: #{{$colors[$index]}}">
-                    <small class="text-muted d-block mb-1">{{ __($key) }}</small>
-                    <p class="h3 text-black fw-light mt-auto">
+                <div class="p-4 rounded shadow-sm h-100 d-flex flex-column metric-container" 
+                     style="background-color: #{{ $config['bg-color'] }}">
+                    <small class="metric-label">{{ __($key) }}</small>
+                    <p class="metric-value mt-auto">
                         {{ is_array($metric) ? $metric['value'] : $metric }}
                     </p>
-                    
-                    <!-- Bootstrap Icon as Overlay -->
-                    <i class="bi {{ $icons[$index] }} image"></i> <!-- Render the icon based on the index -->
+                    <i class="bi {{ $config['icon'] }} metric-icon" 
+                       style="font-size: {{ $config['font-size'] }}"></i>
                 </div>
             </div>
-            @php
-            ++$index;
-            @endphp
         @endforeach
     </div>
 </div>
